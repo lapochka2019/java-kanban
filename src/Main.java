@@ -4,6 +4,7 @@ import model.SubTask;
 import model.Task;
 import service.TaskManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
@@ -27,13 +28,13 @@ public class Main {
         printTasks(manager);
         System.out.println("---------------------------------------------------");
 
-        Epic epic1 = new Epic("Epic1", "Update Epic1", Status.NEW);//3
+        Epic epic1 = new Epic("Epic1", "Update Epic1");//3
         SubTask subTask1 = new SubTask("SubTask1", "Delete this task", Status.NEW);//4
         SubTask subTask2 = new SubTask("SubTask2", "Update this tusk", Status.DONE);//5
         SubTask subTask3 = new SubTask("SubTask3", "Delete this tusk", Status.IN_PROGRESS);//6
         SubTask subTask4 = new SubTask("SubTask4", "Delete this tusk", Status.NEW);//7
 
-        Epic epic2 = new Epic("Epic2", "None", Status.NEW);//8
+        Epic epic2 = new Epic("Epic2", "None");//8
         SubTask subTask5 = new SubTask("SubTask5", "None", Status.DONE);//9
         SubTask subTask6 = new SubTask("SubTask6", "None", Status.NEW);//10
 
@@ -41,18 +42,16 @@ public class Main {
         System.out.println("Добавили эпик1");
         printEpic(manager);
 
-        subTask1.setEpic(epic1);
-        subTask2.setEpic(epic1);
-        subTask3.setEpic(epic1);
-        //Попытка добавить один элемент второй раз
-        manager.create(epic1);
-        System.out.println("Еще раз добавили эпик1");
-        printEpic(manager);
+        subTask1.setEpicId(epic1);
+        subTask2.setEpicId(epic1);
+        subTask3.setEpicId(epic1);
+        //subTask4.setEpicId(epic1);
 
         //subTask4 никому не принадлежит - ошибка при добавлении его в менеджер
         manager.create(subTask1);
         manager.create(subTask2);
         manager.create(subTask3);
+        manager.create(subTask4);
         System.out.println("Добавили подзадачи в эпик");
         printEpic(manager);
         printSubTasks(manager);
@@ -62,8 +61,8 @@ public class Main {
         printEpic(manager);
         printSubTasks(manager);
 
-        subTask5.setEpic(epic2);
-        subTask6.setEpic(epic2);
+        subTask5.setEpicId(epic2);
+        subTask6.setEpicId(epic2);
         manager.create(subTask5);
         manager.create(subTask6);
         System.out.println("Добавили подзадачи в эпик2");
@@ -91,25 +90,22 @@ public class Main {
     }
 
     public static void printTasks(TaskManager manager){
-        HashMap<Integer, Task> tasks = manager.getTasks();
-        for(Integer id:tasks.keySet()){
-            Task task = tasks.get(id);
+        ArrayList<Task> tasks = manager.getTasks();
+        for(Task task:tasks){
             System.out.println(task.toString());
         }
     }
 
     public static void printEpic(TaskManager manager){
-        HashMap<Integer, Epic> epic = manager.getEpics();
-        for(Integer id:epic.keySet()){
-            Task task = epic.get(id);
-            System.out.println(task.toString());
+        ArrayList<Epic> epics = manager.getEpics();
+        for(Epic epic:epics){
+            System.out.println(epic.toString());
         }
     }
     public static void printSubTasks(TaskManager manager){
-        HashMap<Integer, SubTask> epic = manager.getSubTasks();
-        for(Integer id:epic.keySet()){
-            Task task = epic.get(id);
-            System.out.println(task.toString());
+        ArrayList<SubTask> subTasks = manager.getSubTasks();
+        for(SubTask s:subTasks){
+            System.out.println(s.toString());
         }
     }
 }

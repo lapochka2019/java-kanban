@@ -1,9 +1,11 @@
 package service;
 
 import model.Epic;
+import model.Status;
 import model.SubTask;
 import model.Task;
 
+import java.beans.Introspector;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,7 +13,7 @@ public class TaskManager {
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Epic> epics;
     private HashMap<Integer, SubTask> subTasks;
-    int sequence=0;
+    private int idCount =0;
 
     public TaskManager() {
         tasks = new HashMap<>();
@@ -20,48 +22,38 @@ public class TaskManager {
     }
 
     public int generateId(){
-        return ++sequence;
+        return ++idCount;
     }
 
     /**Получение списка всех задач.**/
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public ArrayList<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
     }
 
-    public HashMap<Integer, SubTask> getSubTasks() {
-        return subTasks;
+    public ArrayList<SubTask> getSubTasks() {
+        return new ArrayList<>(subTasks.values());
     }
 
     /**Удаление всех задач.**/
-    public HashMap<Integer, Task> clearTasks (){
+    public void clearTasks (){
         tasks.clear();
-        return tasks;
     }
-    public HashMap<Integer, Epic> clearEpics (){
-        //Для каждого эпика нужно удалить задачи
-        for(Integer id:epics.keySet()){
-            //можно ли здесь вызывать метод deleteSubTask?
-            epics.get(id).clearSubTasks();
-            epics.remove(id);
+    public void clearEpics (){
+        epics.clear();
+        subTasks.clear();
+    }
+    public void clearSubTusks (){
+        subTasks.clear();
+        for(Epic epic: epics.values()){
+            epic.clearSubTasks();
+            epic.setStatus(Status.NEW);
         }
-        return epics;
     }
-    public HashMap<Integer, SubTask> clearSubTusks (){
-        //Для каждой подзадачи нужно пересчитывать Эпик
-        for(Integer id:subTasks.keySet()){
-            //можно ли здесь вызывать метод deleteSubTask?
-            SubTask subTask = subTasks.get(id);
-            Epic epic = epics.get(subTask.getEpic().getId());
-            epic.deleteSubTask(subTask);
-            epic.calculateEpicStatus();
-            subTasks.remove(id);
-        }
-        return subTasks;
-    }
+
     /**Получение по идентификатору**/
     public Task getTask (int id){
         return tasks.get(id);
@@ -72,37 +64,41 @@ public class TaskManager {
     public SubTask getSubTusk (int id){
         return subTasks.get(id);
     }
+
     /**Создание.**/
     public Task create (Task task){
-        //Если id уже задан, то есть элемент уже существует в таблице
-        if(task.getId()!=0){
-            return task;
+        if(task==null){
+            return null;
         }
         task.setId(generateId());
         tasks.put(task.getId(),task);
         return task;
     }
     public Epic create (Epic epic){
-        //Если id уже задан, то есть элемент уже существует в таблице
-        if(epic.getId()!=0){
-            return epic;
+        if(epic==null){
+            return null;
         }
         epic.setId(generateId());
+        epic.setStatus(Status.NEW);
         epics.put(epic.getId(),epic);
         return epic;
     }
     public SubTask create (SubTask subTask){
-        //Если id уже задан, то есть элемент уже существует в таблице
-        if(subTask.getId()!=0){
-            return subTask;
+        if(subTask==null){
+            return null;
+        }
+        int epicId = subTask.getEpicId();
+        if(!epics.containsKey(epicId)){
+            return null;
         }
         subTask.setId(generateId());
         subTasks.put(subTask.getId(), subTask);
-        Epic epic = epics.get(subTask.getEpic().getId());
+        Epic epic = epics.get(epicId);
         epic.addSubTask(subTask);
-        epic.calculateEpicStatus();
+        calculateEpicStatus(epic);
         return subTask;
     }
+
     /**Обновление.**/
     //не уверена, что тут нужно возвращать какое-то значение
     public Task update (Task task){
@@ -133,31 +129,63 @@ public class TaskManager {
         savedSubTask.setDescription(subTask.getDescription());
         savedSubTask.setStatus(subTask.getStatus());
         //нужно ли обновлять Эпик, к которому относится подзадача, например теперь не первый, а второй
-        Epic epic = epics.get(savedSubTask.getEpic().getId());
-        epic.calculateEpicStatus();
+        Epic epic = epics.get(savedSubTask.getEpicId());
+        calculateEpicStatus(epic);
         return savedSubTask;
     }
+
     /**Удаление по идентификатору.**/
-    public HashMap<Integer, Task> deleteTask (int id){
+    public void deleteTask (int id){
         tasks.remove(id);
-        return tasks;
     }
-    public HashMap<Integer, Epic> deleteEpic (int id){
-        epics.get(id).clearSubTasks();
+    public void deleteEpic (int id){
+        //получили Эпик
+        Epic epic = epics.get(id);
+        //получили подзадачи
+        ArrayList<Integer> epicSubTasks = epic.getSubTusks();
+        //удаляем каждую подзадачу из HashMap
+        for(Integer subTusk:epicSubTasks){
+            subTasks.remove(subTusk);
+        }
+        //удаляем Эпик
         epics.remove(id);
-        return epics;
     }
-    public HashMap<Integer, SubTask> deleteSubTusk (int id){
+    public void deleteSubTusk (int id){
         SubTask subTask = subTasks.get(id);
-        Epic epic = epics.get(subTask.getEpic().getId());
-        epic.deleteSubTask(subTask);
-        epic.calculateEpicStatus();
+        Epic epic = epics.get(subTask.getEpicId());
+        epic.deleteSubTask(id);
+        calculateEpicStatus(epic);
         subTasks.remove(id);
-        return subTasks;
     }
 
     /**Получение списка всех подзадач определённого эпика.**/
-    public ArrayList<SubTask> getSubTusks(int id) {
-        return epics.get(id).getSubTusks();
+    public ArrayList<Integer> getSubTusks(int id) {
+        return new ArrayList<>(epics.get(id).getSubTusks());
+    }
+
+    private void calculateEpicStatus(Epic epic){
+        int newCounter = 0;
+        int doneCounter = 0;
+        ArrayList <Integer> epicSubTusks = epic.getSubTusks();
+        int totalCount = epicSubTusks.size();
+        if(epicSubTusks.isEmpty()) {
+            epic.setStatus(Status.NEW);
+        } else{
+            for(Integer id:epicSubTusks){
+                if(subTasks.get(id).getStatus()==Status.NEW){
+                    newCounter++;
+                }
+                if(subTasks.get(id).getStatus()==Status.DONE){
+                    doneCounter++;
+                }
+            }
+            if(newCounter==totalCount){
+                epic.setStatus(Status.NEW);
+            }else if(doneCounter==totalCount) {
+                epic.setStatus(Status.DONE);
+            }else{
+                epic.setStatus(Status.IN_PROGRESS);
+            }
+        }
     }
 }

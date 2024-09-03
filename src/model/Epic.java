@@ -3,49 +3,25 @@ package model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    ArrayList<SubTask> subTasks = new ArrayList<>();//список подзадач, относящихся к данному "списку"
+    private ArrayList<Integer> subTasksId = new ArrayList<>();//список подзадач, относящихся к данному "списку"
 
-    public Epic(String name, String description, Status status) {
-        super(name, description, status);
+    public Epic(String name, String description) {
+        super(name, description, Status.NEW);
     }
 
-    public ArrayList<SubTask> getSubTusks() {
-        return subTasks;
+    public ArrayList<Integer> getSubTusks() {
+        return subTasksId;
     }
 
     public void addSubTask(SubTask subTask){
-        subTasks.add(subTask);
+        subTasksId.add(subTask.getId());
     }
 
-    public void deleteSubTask(SubTask subTask){
-        subTasks.remove(subTask);
+    public void deleteSubTask(int subTuskId){
+        subTasksId.remove((Integer) subTuskId);
     }
     public void clearSubTasks(){
-        subTasks.clear();
-    }
-
-    public Status calculateEpicStatus(){
-        Status status = Status.NEW;
-        if(subTasks.isEmpty()){
-            this.setStatus(Status.NEW);
-            return Status.NEW;
-        }
-
-        int doneCount=0;
-        for(SubTask subTask : subTasks) {
-            if(Status.DONE.equals(subTask.getStatus())) {
-                doneCount++;
-            }
-        }
-        if(doneCount== subTasks.size()){
-            status = Status.DONE;
-        }else if(doneCount==0){
-            status = Status.NEW;
-        }else{
-            status = Status.IN_PROGRESS;
-        }
-        this.setStatus(status);
-        return status;
+        subTasksId.clear();
     }
 
     @Override
@@ -55,7 +31,7 @@ public class Epic extends Task {
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus()+ '\'' +
                 ", SubTasks[";
-        for(SubTask subTask:subTasks){
+        for(Integer subTask: subTasksId){
             string+=subTask.toString()+"\n";
         }
         string+="]}";
