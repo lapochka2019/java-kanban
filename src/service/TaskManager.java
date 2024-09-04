@@ -95,7 +95,7 @@ public class TaskManager {
         subTasks.put(subTask.getId(), subTask);
         Epic epic = epics.get(epicId);
         epic.addSubTask(subTask);
-        calculateEpicStatus(epic);
+        calculateEpicStatus(epicId);
         return subTask;
     }
 
@@ -129,8 +129,7 @@ public class TaskManager {
         savedSubTask.setDescription(subTask.getDescription());
         savedSubTask.setStatus(subTask.getStatus());
         //нужно ли обновлять Эпик, к которому относится подзадача, например теперь не первый, а второй
-        Epic epic = epics.get(savedSubTask.getEpicId());
-        calculateEpicStatus(epic);
+        calculateEpicStatus(savedSubTask.getEpicId());
         return savedSubTask;
     }
 
@@ -154,16 +153,22 @@ public class TaskManager {
         SubTask subTask = subTasks.get(id);
         Epic epic = epics.get(subTask.getEpicId());
         epic.deleteSubTask(id);
-        calculateEpicStatus(epic);
+        calculateEpicStatus(epic.getId());
         subTasks.remove(id);
     }
 
     /**Получение списка всех подзадач определённого эпика.**/
-    public ArrayList<Integer> getSubTusks(int id) {
-        return new ArrayList<>(epics.get(id).getSubTusks());
+    public ArrayList<SubTask> getSubTusks(int id) {
+        ArrayList<SubTask> epicSubTasks = new ArrayList<>();
+        for(Integer subTuskId:epics.get(id).getSubTusks())
+        {
+            epicSubTasks.add(subTasks.get(subTuskId));
+        }
+        return epicSubTasks;
     }
 
-    private void calculateEpicStatus(Epic epic){
+    private void calculateEpicStatus(int epicId){
+        Epic epic = epics.get(epicId);
         int newCounter = 0;
         int doneCounter = 0;
         ArrayList <Integer> epicSubTusks = epic.getSubTusks();
@@ -177,6 +182,10 @@ public class TaskManager {
                 }
                 if(subTasks.get(id).getStatus()==Status.DONE){
                     doneCounter++;
+                }
+                if(subTasks.get(id).getStatus()==Status.IN_PROGRESS){
+                    epic.setStatus(Status.IN_PROGRESS);
+                    return;
                 }
             }
             if(newCounter==totalCount){
