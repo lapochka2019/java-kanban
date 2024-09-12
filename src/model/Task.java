@@ -45,20 +45,12 @@ public class Task {
     public void setStatus(Status status) {
         this.status = status;
     }
-
-    /**Фраза «информация приходит вместе с информацией по задаче» означает,
-     * что не существует отдельного метода, который занимался бы только обновлением статуса задачи.
-     * Вместо этого статус задачи обновляется вместе с полным обновлением задачи.**/
-    //Получается, что сеттер для статуса не нужен?
-    //Но без него не обновить статус для Эпика
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return id == task.id;
     }
 
     @Override
