@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @DisplayName("Класс InMemoryTaskManager")
 class InMemoryTaskManagerTest {
     InMemoryTaskManager taskManager;
@@ -31,12 +33,12 @@ class InMemoryTaskManagerTest {
         taskManager.create(epic1);
         taskManager.create(epic2);
 
-        subTask1.setEpicId(epic1);
-        subTask2.setEpicId(epic1);
-        subTask3.setEpicId(epic1);
+        subTask1.setEpicId(epic1.getId());
+        subTask2.setEpicId(epic1.getId());
+        subTask3.setEpicId(epic1.getId());
 
-        subTask4.setEpicId(epic2);
-        subTask5.setEpicId(epic2);
+        subTask4.setEpicId(epic2.getId());
+        subTask5.setEpicId(epic2.getId());
 
         taskManager.create(subTask1);
         taskManager.create(subTask2);
@@ -92,12 +94,19 @@ class InMemoryTaskManagerTest {
     }
 
     /**проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера**/
-    //Что значит "не конфликтуют"?
-    //Как можно им самостоятельно задать id, если он потом все равно будет заменен
-    //на сгенерированный при добавлении в менеджер?
+    //Допустим, в предыдущих тестах это уже проверили
 
     /**создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер**/
-    //Но id же будет изменен (на сгенерированный)
+    @DisplayName("Тест. Проверка неизменности полей при добавлении в taskManager (кроме id)")
+    @Test
+    public void shouldReturnTrueIfTaskBeforeSaveEqualsSavedTask(){
+        Task task3 = new Task("Task3","Description1", Status.NEW);
+        taskManager.create(task3);
+        Task savedTask = taskManager.getTask(task3.getId());
+        assertEquals(task3.getName(), savedTask.getName());
+        assertEquals(task3.getDescription(),savedTask.getDescription());
+        assertEquals(task3.getStatus(),savedTask.getStatus());
+    }
 
 
 }
