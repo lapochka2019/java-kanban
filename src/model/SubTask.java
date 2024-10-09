@@ -22,7 +22,7 @@ public class SubTask extends Task {
                 "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
-                ", status=" + this.getStatus()+
+                ", status=" + this.getStatus() +
                 "} ";
     }
 }

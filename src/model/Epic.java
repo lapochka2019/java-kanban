@@ -27,13 +27,13 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        String string = "Epic{"+"id=" + this.getId() +
+        String string = "Epic{" + "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
-                ", status=" + this.getStatus()+ '\'' +
+                ", status=" + this.getStatus() + '\'' +
                 ", SubTasks[";
-        for(Integer subTask: subTasksId){
-            string += subTask.toString()+"\n";
+        for (Integer subTask: subTasksId) {
+            string += subTask.toString() + "\n";
         }
         string += "]}";
         return string;
