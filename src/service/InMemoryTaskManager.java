@@ -208,8 +208,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     /**Получение списка всех подзадач определённого эпика.**/
-    public ArrayList <SubTask> getEpicSubTasks(int id) {
-        ArrayList <SubTask> epicSubTasks = new ArrayList<>();
+    public ArrayList<SubTask> getEpicSubTasks(int id) {
+        ArrayList<SubTask> epicSubTasks = new ArrayList<>();
         for (Integer subTuskId:epics.get(id).getSubTusks()) {
             epicSubTasks.add(subTasks.get(subTuskId));
         }
@@ -222,12 +222,12 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         int newCounter = 0;
         int doneCounter = 0;
-        ArrayList <Integer> epicSubTusks = epic.getSubTusks();
+        ArrayList<Integer> epicSubTusks = epic.getSubTusks();
         int totalCount = epicSubTusks.size();
         if (epicSubTusks.isEmpty()) {
             epic.setStatus(Status.NEW);
         } else {
-            for (Integer id:epicSubTusks){
+            for (Integer id:epicSubTusks) {
                 if (subTasks.get(id).getStatus() == Status.NEW) {
                     newCounter++;
                 }
