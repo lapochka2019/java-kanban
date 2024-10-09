@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Класс InMemoryHistoryManager")
@@ -60,17 +59,52 @@ class InMemoryHistoryManagerTest {
         assertEquals(task1.getDescription(),savedTask.getDescription());
         assertEquals(task1.getStatus(),savedTask.getStatus());
     }
-    @DisplayName("Тест. История хранит не больше 10 задач")
+    @DisplayName("Тест. История не хранит повторные просмотры задач")
     @Test
-    public void shouldReturnTrueIfTaskListSizeEquals10(){
-        Random r = new Random();
-        for(int i=0;i<4;i++){
+    public void shouldReturnTrueIfHistoryNotContainsDuplicates(){
+        for(int i=0;i<2;i++){
             //получается 12 добавлений
-            taskManager.getTask(r.nextInt(2)+1);//(0,1)+1=(1,2)
-            taskManager.getEpic(r.nextInt(2)+3);//(0,1)+3=(3,4)
-            taskManager.getSubTusk(r.nextInt(5)+5);//(0,1,2,3,4) + 5 = (5,6,7,8,9)
+            taskManager.getTask(1);
+            taskManager.getEpic(3);
+            taskManager.getSubTask(5);
         }
         ArrayList<Task> savedList = taskManager.history.getHistory();
-        assertEquals(10, savedList.size());
+        assertEquals(3, savedList.size());
+    }
+    @DisplayName("Тест. История сохраняет порядок просмотра задач")
+    @Test
+    public void shouldReturnTrueIfHistorySaveViewingOrder(){
+        ArrayList<Task> sampleList = new ArrayList<>();
+        sampleList.add(taskManager.getTask(1));
+        sampleList.add(taskManager.getEpic(3));
+        sampleList.add(taskManager.getSubTask(5));
+        taskManager.getTask(1);
+        taskManager.getEpic(3);
+        taskManager.getSubTask(5);
+        ArrayList<Task> savedList = taskManager.history.getHistory();
+        assertIterableEquals(sampleList, savedList);
+    }
+
+    @DisplayName("Тест. Удалите задачу, которая есть в истории, и проверьте, что при печати она не будет выводиться")
+    @Test
+    public void shouldReturnTrueIfHistoryRemoveDeletedTask(){
+        taskManager.getTask(1);
+        taskManager.getEpic(3);
+        taskManager.getSubTask(5);
+        taskManager.deleteTask(1);
+        ArrayList<Task> savedList = taskManager.history.getHistory();
+        assertEquals(2, savedList.size());
+    }
+
+    @DisplayName("Тест. Удалите эпик с тремя подзадачами и убедитесь, что из истории удалился как сам эпик, так и все его подзадачи")
+    @Test
+    public void shouldReturnTrueIfEpicRemoved(){
+        taskManager.getTask(1);
+        taskManager.getEpic(3);
+        taskManager.getSubTask(5);
+        taskManager.getSubTask(6);
+        taskManager.deleteEpic(3);
+        ArrayList<Task> savedList = taskManager.history.getHistory();
+        assertEquals(1, savedList.size());
     }
 }

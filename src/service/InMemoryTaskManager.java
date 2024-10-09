@@ -7,7 +7,6 @@ import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
@@ -84,7 +83,7 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
     @Override
-    public SubTask getSubTusk(int id){
+    public SubTask getSubTask(int id){
         if(subTasks.containsKey(id)){
             SubTask subTask = subTasks.get(id);
             history.add(subTask);
@@ -171,6 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id){
         tasks.remove(id);
+        history.remove(id);
     }
     @Override
     public void deleteEpic(int id){
@@ -181,9 +181,11 @@ public class InMemoryTaskManager implements TaskManager {
         //удаляем каждую подзадачу из HashMap
         for(Integer subTusk:epicSubTasks){
             subTasks.remove(subTusk);
+            history.remove(subTusk);
         }
         //удаляем Эпик
         epics.remove(id);
+        history.remove(id);
     }
     @Override
     public void deleteSubTusk(int id){
@@ -192,11 +194,11 @@ public class InMemoryTaskManager implements TaskManager {
         epic.deleteSubTask(id);
         calculateEpicStatus(epic.getId());
         subTasks.remove(id);
+        history.remove(id);
     }
 
     /**Получение списка всех подзадач определённого эпика.**/
-    @Override
-    public ArrayList<SubTask> getSubTusks(int id) {
+    public ArrayList<SubTask> getEpicSubTasks(int id) {
         ArrayList<SubTask> epicSubTasks = new ArrayList<>();
         for(Integer subTuskId:epics.get(id).getSubTusks())
         {
