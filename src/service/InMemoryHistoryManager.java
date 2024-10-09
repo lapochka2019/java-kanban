@@ -3,7 +3,6 @@ package service;
 import model.Task;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -38,6 +37,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         history.put(task.getId(), newNode);
     }
+
     @Override
     public void remove(int id) {
         if (history.containsKey(id)) {
@@ -47,7 +47,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    private void linkLast(Node newNode){
+    private void linkLast(Node newNode) {
         //Нужно ли добавить проверку на пустой таск?
         if (last == null) {
             first = newNode;
@@ -70,10 +70,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (nextNode == null && previousNode == null) {
             first = null;
             last = null;
-        } else if (nextNode==null) { //Если node - хвост
+        } else if (nextNode == null) { //Если node - хвост
             last = node.previous;
             last.next = null;
-        } else if (previousNode==null) { //Если node - голова
+        } else if (previousNode == null) { //Если node - голова
             first = node.next;
             first.previous = null;
         } else {
@@ -83,7 +83,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private ArrayList<Task> getTasks() {
-        ArrayList <Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
         Node temp = first;
         while (temp != null) {
             tasks.add(temp.task);
