@@ -21,26 +21,26 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
        //Если Task пустой
-       if(task==null){
+       if (task == null) {
            return;
        }
        //Если данный Task уже просмотрен
-       if(history.containsKey(task.getId())){
+       if (history.containsKey(task.getId())) {
            removeNode(history.get(task.getId()));
        }
        //Если это первый элемент связного списка
         Node newNode = new Node(task);
-        if (last==null){
+        if (last == null) {
             first = newNode;
             last = newNode;
-        }else{
+        } else {
             linkLast(newNode);
         }
         history.put(task.getId(), newNode);
     }
     @Override
-    public void remove(int id){
-        if(history.containsKey(id)){
+    public void remove(int id) {
+        if (history.containsKey(id)) {
             Node node = history.get(id);
             removeNode(node);
             history.remove(id);
@@ -49,45 +49,45 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void linkLast(Node newNode){
         //Нужно ли добавить проверку на пустой таск?
-        if(last==null){
+        if (last == null) {
             first = newNode;
             last = newNode;
-        }else{
+        } else {
             newNode.previous = last;
             last.next = newNode;
             last = newNode;
         }
     }
 
-    private void removeNode(Node node){
+    private void removeNode(Node node) {
         //Если узел пуст
-        if(node==null){
+        if (node == null) {
             return;
         }
         Node nextNode = node.next;
         Node previousNode = node.previous;
         //Если это был единственный элемент списка
-        if(nextNode==null&&previousNode==null){
+        if (nextNode == null && previousNode == null) {
             first = null;
             last = null;
-        } else if(nextNode==null){ //Если node - хвост
+        } else if (nextNode==null) { //Если node - хвост
             last = node.previous;
             last.next = null;
-        } else if(previousNode==null){ //Если node - голова
+        } else if (previousNode==null) { //Если node - голова
             first = node.next;
             first.previous = null;
-        }else {
+        } else {
             previousNode.next = node.next;
             nextNode.previous = node.previous;
         }
     }
 
-    private ArrayList<Task> getTasks(){
+    private ArrayList<Task> getTasks() {
         ArrayList <Task> tasks = new ArrayList<>();
         Node temp = first;
-        while (temp!=null){
+        while (temp != null) {
             tasks.add(temp.task);
-            temp=temp.next;
+            temp = temp.next;
         }
         return tasks;
     }
