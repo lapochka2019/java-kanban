@@ -49,11 +49,13 @@ public class InMemoryTaskManager implements TaskManager {
     public void clearTasks() {
         tasks.clear();
     }
+
     @Override
     public void clearEpics() {
         epics.clear();
         subTasks.clear();
     }
+
     @Override
     public void clearSubTusks() {
         subTasks.clear();
@@ -73,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return null;
     }
+
     @Override
     public Epic getEpic(int id) {
         if (epics.containsKey(id)) {
@@ -82,6 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return null;
     }
+
     @Override
     public SubTask getSubTask(int id) {
         if (subTasks.containsKey(id)) {
@@ -95,16 +99,17 @@ public class InMemoryTaskManager implements TaskManager {
     /**Создание.**/
     @Override
     public Task create(Task task) {
-        if (task==null) {
+        if (task == null) {
             return null;
         }
         task.setId(generateId());
         tasks.put(task.getId(),task);
         return task;
     }
+
     @Override
     public Epic create(Epic epic) {
-        if (epic==null) {
+        if (epic == null) {
             return null;
         }
         epic.setId(generateId());
@@ -112,9 +117,10 @@ public class InMemoryTaskManager implements TaskManager {
         epics.put(epic.getId(),epic);
         return epic;
     }
+
     @Override
     public SubTask create(SubTask subTask) {
-        if (subTask==null) {
+        if (subTask == null) {
             return null;
         }
         int epicId = subTask.getEpicId();
@@ -134,7 +140,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task update(Task task) {
         Task savedTask = tasks.get(task.getId());
-        if (savedTask==null) {
+        if (savedTask == null) {
             return null;
         }
         savedTask.setName(task.getName());
@@ -142,20 +148,22 @@ public class InMemoryTaskManager implements TaskManager {
         savedTask.setStatus(task.getStatus());
         return savedTask;
     }
+
     @Override
     public Epic update(Epic epic) {
         Epic savedEpic = epics.get(epic.getId());
-        if (savedEpic==null) {
+        if (savedEpic == null) {
             return null;
         }
         savedEpic.setName(epic.getName());
         savedEpic.setDescription(epic.getDescription());
         return savedEpic;
     }
+
     @Override
     public SubTask update(SubTask subTask) {
         SubTask savedSubTask = subTasks.get(subTask.getId());
-        if (savedSubTask==null) {
+        if (savedSubTask == null) {
             return null;
         }
         savedSubTask.setName(subTask.getName());
@@ -172,6 +180,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(id);
         history.remove(id);
     }
+
     @Override
     public void deleteEpic(int id) {
         //получили Эпик
@@ -187,6 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.remove(id);
         history.remove(id);
     }
+
     @Override
     public void deleteSubTusk(int id) {
         SubTask subTask = subTasks.get(id);
@@ -198,13 +208,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     /**Получение списка всех подзадач определённого эпика.**/
-    public ArrayList<SubTask> getEpicSubTasks(int id) {
-        ArrayList<SubTask> epicSubTasks = new ArrayList<>();
+    public ArrayList <SubTask> getEpicSubTasks(int id) {
+        ArrayList <SubTask> epicSubTasks = new ArrayList<>();
         for (Integer subTuskId:epics.get(id).getSubTusks()) {
             epicSubTasks.add(subTasks.get(subTuskId));
         }
         return epicSubTasks;
     }
+
     //Нужен ли этот метод в интерфейсе?
     //Раз он приватный, я полагаю, что не нужен.
     private void calculateEpicStatus(int epicId) {
@@ -217,20 +228,20 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.NEW);
         } else {
             for (Integer id:epicSubTusks){
-                if (subTasks.get(id).getStatus()==Status.NEW){
+                if (subTasks.get(id).getStatus() == Status.NEW) {
                     newCounter++;
                 }
-                if (subTasks.get(id).getStatus()==Status.DONE){
+                if (subTasks.get(id).getStatus() == Status.DONE) {
                     doneCounter++;
                 }
-                if (subTasks.get(id).getStatus()==Status.IN_PROGRESS){
+                if (subTasks.get(id).getStatus() == Status.IN_PROGRESS) {
                     epic.setStatus(Status.IN_PROGRESS);
                     return;
                 }
             }
-            if (newCounter==totalCount){
+            if (newCounter == totalCount) {
                 epic.setStatus(Status.NEW);
-            }else if (doneCounter==totalCount)  {
+            } else if (doneCounter == totalCount)  {
                 epic.setStatus(Status.DONE);
             } else {
                 epic.setStatus(Status.IN_PROGRESS);
