@@ -9,8 +9,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     HashMap<Integer, Node> history = new HashMap<>();
     Node first;
     Node last;
-    ArrayList<Task> historyList = new ArrayList<>();
-    /**Я не очень поняла, для чего нам еще ArrayList*/
 
     @Override
     public ArrayList<Task> getHistory() {
@@ -23,18 +21,10 @@ public class InMemoryHistoryManager implements HistoryManager {
        if (task == null) {
            return;
        }
-       //Если данный Task уже просмотрен
-       if (history.containsKey(task.getId())) {
-           removeNode(history.get(task.getId()));
-       }
-       //Если это первый элемент связного списка
+       //Получается я тут в любом случае вызываю метод удаления?
+        removeNode(task.getId());
         Node newNode = new Node(task);
-        if (last == null) {
-            first = newNode;
-            last = newNode;
-        } else {
-            linkLast(newNode);
-        }
+        linkLast(newNode);
         history.put(task.getId(), newNode);
     }
 
@@ -42,13 +32,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         if (history.containsKey(id)) {
             Node node = history.get(id);
-            removeNode(node);
-            history.remove(id);
+            removeNode(id);
         }
     }
 
     private void linkLast(Node newNode) {
-        //Нужно ли добавить проверку на пустой таск?
         if (last == null) {
             first = newNode;
             last = newNode;
@@ -59,7 +47,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    private void removeNode(Node node) {
+    private void removeNode(int id) {
+        //Если данный индекс не найден в истории, ничего не делаем?
+        if (!history.containsKey(id)) {
+            return;
+        }
+        Node node = history.get(id);
         //Если узел пуст
         if (node == null) {
             return;
@@ -71,15 +64,16 @@ public class InMemoryHistoryManager implements HistoryManager {
             first = null;
             last = null;
         } else if (nextNode == null) { //Если node - хвост
-            last = node.previous;
+            last = previousNode;
             last.next = null;
         } else if (previousNode == null) { //Если node - голова
-            first = node.next;
+            first = nextNode;
             first.previous = null;
         } else {
-            previousNode.next = node.next;
-            nextNode.previous = node.previous;
+            previousNode.next = nextNode;
+            nextNode.previous = previousNode;
         }
+        history.remove(id);
     }
 
     private ArrayList<Task> getTasks() {

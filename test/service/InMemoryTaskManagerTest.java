@@ -105,7 +105,6 @@ class InMemoryTaskManagerTest {
         assertEquals(task3.getDescription(),savedTask.getDescription());
         assertEquals(task3.getStatus(),savedTask.getStatus());
     }
-    //Удаляемые подзадачи не должны хранить внутри себя старые id???
 
     @DisplayName("Тест. Внутри эпиков не должно оставаться неактуальных id подзадач")
     @Test
@@ -117,6 +116,4 @@ class InMemoryTaskManagerTest {
         ArrayList<SubTask> newTasks = taskManager.getEpicSubTasks(3);
         assertEquals(oldTasks.size(),newTasks.size()+1);
     }
-//С помощью сеттеров экземпляры задач позволяют изменить
-// любое своё поле, но это может повлиять на данные внутри менеджера. Протестируйте эти кейсы
 }

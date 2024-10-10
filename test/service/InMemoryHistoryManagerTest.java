@@ -107,4 +107,45 @@ class InMemoryHistoryManagerTest {
         ArrayList<Task> savedList = taskManager.history.getHistory();
         assertEquals(1, savedList.size());
     }
+
+    @DisplayName("Тест. Удаление задач из истории при удалении всех задач из менеджера")
+    @Test
+    public void shouldReturnTrueIfAllTasksRemoved(){
+        taskManager.getTask(1);
+        taskManager.getTask(2);
+        taskManager.getEpic(3);
+        taskManager.getSubTask(5);
+        taskManager.getSubTask(6);
+        taskManager.clearTasks();
+        ArrayList<Task> savedList = taskManager.history.getHistory();
+        assertEquals(3, savedList.size());
+    }
+
+    @DisplayName("Тест. Удаление подзадач из истории при удалении их из менеджера")
+    @Test
+    public void shouldReturnTrueIfAllSubtasksRemoved(){
+        taskManager.getTask(1);
+        taskManager.getTask(2);
+        taskManager.getEpic(3);
+        taskManager.getEpic(4);
+        taskManager.getSubTask(5);
+        taskManager.getSubTask(6);
+        taskManager.clearSubTusks();
+        ArrayList<Task> savedList = taskManager.history.getHistory();
+        assertEquals(4, savedList.size());
+    }
+
+    @DisplayName("Тест. Удаление подзадач и эпиков из истории при удалении их из менеджера")
+    @Test
+    public void shouldReturnTrueIfAllEpicsRemoved(){
+        taskManager.getTask(1);
+        taskManager.getTask(2);
+        taskManager.getEpic(3);
+        taskManager.getEpic(4);
+        taskManager.getSubTask(5);
+        taskManager.getSubTask(6);
+        taskManager.clearEpics();
+        ArrayList<Task> savedList = taskManager.history.getHistory();
+        assertEquals(2, savedList.size());
+    }
 }
