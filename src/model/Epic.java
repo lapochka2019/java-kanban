@@ -13,28 +13,29 @@ public class Epic extends Task {
         return subTasksId;
     }
 
-    public void addSubTask(SubTask subTask){
+    public void addSubTask(SubTask subTask) {
         subTasksId.add(subTask.getId());
     }
 
-    public void deleteSubTask(int subTuskId){
+    public void deleteSubTask(int subTuskId) {
         subTasksId.remove((Integer) subTuskId);
     }
-    public void clearSubTasks(){
+
+    public void clearSubTasks() {
         subTasksId.clear();
     }
 
     @Override
     public String toString() {
-        String string = "Epic{"+"id=" + this.getId() +
+        String string = "Epic{" + "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
-                ", status=" + this.getStatus()+ '\'' +
+                ", status=" + this.getStatus() + '\'' +
                 ", SubTasks[";
-        for(Integer subTask: subTasksId){
-            string+=subTask.toString()+"\n";
+        for (Integer subTask: subTasksId) {
+            string += subTask.toString() + "\n";
         }
-        string+="]}";
+        string += "]}";
         return string;
     }
 }
