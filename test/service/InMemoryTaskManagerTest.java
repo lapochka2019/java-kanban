@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Класс InMemoryTaskManager")
 class InMemoryTaskManagerTest {
@@ -89,14 +91,10 @@ class InMemoryTaskManagerTest {
     public void shouldReturnSubtaskIfRealContainsSubtasks(){
         SubTask subTask1 = new SubTask("Subtusk1", "Description1", Status.IN_PROGRESS);
         subTask1.setId(5);
-        SubTask resultTusk = taskManager.getSubTusk(5);
+        SubTask resultTusk = taskManager.getSubTask(5);
         Assertions.assertEquals(subTask1,resultTusk);
     }
 
-    /**проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера**/
-    //Допустим, в предыдущих тестах это уже проверили
-
-    /**создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер**/
     @DisplayName("Тест. Проверка неизменности полей при добавлении в taskManager (кроме id)")
     @Test
     public void shouldReturnTrueIfTaskBeforeSaveEqualsSavedTask(){
@@ -108,5 +106,14 @@ class InMemoryTaskManagerTest {
         assertEquals(task3.getStatus(),savedTask.getStatus());
     }
 
-
+    @DisplayName("Тест. Внутри эпиков не должно оставаться неактуальных id подзадач")
+    @Test
+    public void shouldReturnTrueIfEpicContainsOnlyActualTasks(){
+        ArrayList<SubTask> oldTasks = taskManager.getEpicSubTasks(3);
+        SubTask subTask1 = new SubTask("Subtusk1", "Description1", Status.IN_PROGRESS);
+        oldTasks.remove(subTask1);
+        taskManager.deleteSubTusk(5);
+        ArrayList<SubTask> newTasks = taskManager.getEpicSubTasks(3);
+        assertEquals(oldTasks.size(),newTasks.size()+1);
+    }
 }
