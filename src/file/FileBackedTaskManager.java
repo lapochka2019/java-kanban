@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private Path file;
-    public FileBackedTaskManager (InMemoryHistoryManager history, Path file) {
+    public FileBackedTaskManager(InMemoryHistoryManager history, Path file) {
         super(history);
         this.file = file;
     }
@@ -132,6 +132,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         return manager;
     }
+
     //метод для записи данных из файла в мапы
     public void getTaskFromString(String inputString) {
         String[] taskStringArray = inputString.split(",");
@@ -168,8 +169,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public String toString(Task task) {
-        return task.getId() + "," + task.getType() + "," +task.getName() + "," +
-                task.getStatus() + "," +task.getDescription() + "," +task.getEpicId() + "\n";
+        return task.getId() + "," + task.getType() + "," + task.getName() + "," +
+                task.getStatus() + "," + task.getDescription() + "," + task.getEpicId() + "\n";
     }
 
     public static void main(String[] args) {
