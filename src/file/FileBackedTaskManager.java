@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private Path file;
-    public FileBackedTaskManager(InMemoryHistoryManager history, Path file) {
+    public FileBackedTaskManager (InMemoryHistoryManager history, Path file) {
         super(history);
         this.file = file;
     }
@@ -55,6 +55,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
         return subTusk1;
     }
+
     //Может, имеет смысл эти методы в родительском классе сделать void?
     @Override
     public Task update(Task task) {
@@ -95,13 +96,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void save(){
+    public void save() {
         StringBuilder outputString = new StringBuilder("id,type,name,status,description,epic\n");
-        for(Task task:tasks.values())
+        for (Task task:tasks.values())
             outputString.append(toString(task));
-        for(Epic epic:epics.values())
+        for (Epic epic:epics.values())
             outputString.append(toString(epic));
-        for(SubTask subTask:subTasks.values())
+        for (SubTask subTask:subTasks.values())
             outputString.append(toString(subTask));
         try {
             Files.writeString(file, outputString.toString());
@@ -118,21 +119,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             List<String> lines = Files.readAllLines(file);
             //Пропускаем первую строку
-            if(lines.isEmpty())
+            if (lines.isEmpty())
                 return manager;
             lines.removeFirst();
             //Перебираем строки
-            for(String s:lines){
+            for (String s:lines) {
                 manager.getTaskFromString(s);
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файла: ",e);
         }
 
         return manager;
     }
     //метод для записи данных из файла в мапы
-    public void getTaskFromString(String inputString){
+    public void getTaskFromString(String inputString) {
         String[] taskStringArray = inputString.split(",");
 
         int id = Integer.parseInt(taskStringArray[0]);
@@ -141,7 +142,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Status status = Status.valueOf(taskStringArray[3]);
         String description = taskStringArray[4];
 
-        switch (type){
+        switch (type) {
             case TaskType.Task -> {
                 Task task = new Task(name,description,status);
                 task.setId(id);
@@ -166,7 +167,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         idCount = id;
     }
 
-    public String toString(Task task){
+    public String toString(Task task) {
         return task.getId() + "," + task.getType() + "," +task.getName() + "," +
                 task.getStatus() + "," +task.getDescription() + "," +task.getEpicId() + "\n";
     }
