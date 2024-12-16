@@ -18,6 +18,9 @@ public class Task {
         return name;
     }
 
+    public TaskType getType(){
+        return TaskType.Task;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -32,6 +35,9 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+    public Integer getEpicId(){
+        return null;
     }
 
     public void setId(int id) {
@@ -58,6 +64,7 @@ public class Task {
     public int hashCode() {
         return Objects.hash(name, description, id, status);
     }
+
 
     @Override
     public String toString() {

@@ -5,6 +5,11 @@ import java.util.ArrayList;
 public class Epic extends Task {
     private ArrayList<Integer> subTasksId = new ArrayList<>();//список подзадач, относящихся к данному "списку"
 
+    @Override
+    public TaskType getType(){
+        return TaskType.Epic;
+    }
+
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
     }

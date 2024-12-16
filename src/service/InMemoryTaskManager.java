@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Epic> epics;
-    private HashMap<Integer, SubTask> subTasks;
-    private int idCount = 0;
+    protected HashMap<Integer, Task> tasks;
+    protected HashMap<Integer, Epic> epics;
+    protected HashMap<Integer, SubTask> subTasks;
+    protected int idCount = 0;
     //пришлось убрать приватность для теста
     InMemoryHistoryManager history;
 
