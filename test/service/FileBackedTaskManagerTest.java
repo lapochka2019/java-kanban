@@ -31,19 +31,17 @@ public class FileBackedTaskManagerTest {
         manager.clearTasks();
         List<String> lines = Files.readAllLines(file);
         assertEquals(1, lines.size());
-
     }
     //Пустое чтение
     @DisplayName("Тест. Считать данные из пустого файла (без первой строки)")
     @Test
-    public void shouldReturnTrueIfManagerListsIsEmpty() throws IOException {
+    public void shouldReturnTrueIfManagerListsIsEmpty() {
         Path file = Paths.get("test2.csv");
         manager = loadFromFile(file);
 
         assertEquals(0, manager.getTasks().size());
         assertEquals(0, manager.getEpics().size());
         assertEquals(0, manager.getSubTasks().size());
-
     }
     //Сохранение нескольких задач
     @DisplayName("Тест. Сохранить заполненный менеджер")
@@ -88,13 +86,12 @@ public class FileBackedTaskManagerTest {
     //Загрузка нескольких задач
     @DisplayName("Тест. Считать данные из заполненного файла")
     @Test
-    public void shouldReturnTrueIfManagerListsIsNotEmpty() throws IOException {
+    public void shouldReturnTrueIfManagerListsIsNotEmpty() {
         Path file = Paths.get("test4.csv");
         manager = loadFromFile(file);
 
         assertEquals(2, manager.getTasks().size());
         assertEquals(2, manager.getEpics().size());
         assertEquals(5, manager.getSubTasks().size());
-
     }
 }
