@@ -6,7 +6,7 @@ public class Epic extends Task {
     private ArrayList<Integer> subTasksId = new ArrayList<>();//список подзадач, относящихся к данному "списку"
 
     @Override
-    public TaskType getType(){
+    public TaskType getType() {
         return TaskType.Epic;
     }
 

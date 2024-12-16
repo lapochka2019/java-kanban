@@ -18,7 +18,7 @@ public class Task {
         return name;
     }
 
-    public TaskType getType(){
+    public TaskType getType() {
         return TaskType.Task;
     }
     public void setName(String name) {
