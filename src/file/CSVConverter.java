@@ -17,7 +17,6 @@ public class CSVConverter {
 
     public static Task getTaskFromString(String inputString) {
         String[] taskStringArray = inputString.split(",");
-
         int id = Integer.parseInt(taskStringArray[0]);
         TaskType type = TaskType.valueOf(taskStringArray[1]);
         String name = taskStringArray[2];
