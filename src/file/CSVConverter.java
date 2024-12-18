@@ -5,19 +5,16 @@ import model.*;
 public class CSVConverter {
 
     public static String converTaskToString(Task task) {
-
-        if(TaskType.SubTask.equals(task.getType())) {
+        if (TaskType.SubTask.equals(task.getType())) {
             SubTask subTask = (SubTask) task;
             return subTask.getId() + "," + subTask.getType() + "," + subTask.getName() + "," +
                     subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId() + "\n";
-        }
-        else {
+        } else {
             return task.getId() + "," + task.getType() + "," + task.getName() + "," +
                     task.getStatus() + "," + task.getDescription() + "\n";
         }
-
     }
-    //метод для записи данных из файла в мапы
+
     public static Task getTaskFromString(String inputString) {
         String[] taskStringArray = inputString.split(",");
 
