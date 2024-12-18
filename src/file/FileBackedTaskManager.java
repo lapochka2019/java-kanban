@@ -16,7 +16,8 @@ import static file.CSVConverter.getTaskFromString;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private Path file;
-    private final static String HEADER = "id,type,name,status,description,epic\n";
+    private static final String HEADER = "id,type,name,status,description,epic\n";
+
     public FileBackedTaskManager(InMemoryHistoryManager history, Path file) {
         super(history);
         this.file = file;
@@ -145,7 +146,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         manager.subTasks.put(subTask.getId(), subTask);
                     }
                 }
-                if(task.getId()>manager.idCount) {
+                if (task.getId() > manager.idCount) {
                     manager.idCount = task.getId();
                 }
             }
