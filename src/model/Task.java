@@ -38,10 +38,6 @@ public class Task {
         return id;
     }
 
-    public Integer getEpicId() {
-        return null;
-    }
-
     public void setId(int id) {
         this.id = id;
     }

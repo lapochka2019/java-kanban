@@ -3,6 +3,7 @@ package file;
 import model.*;
 import service.InMemoryHistoryManager;
 import service.InMemoryTaskManager;
+import file.CSVConverter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,9 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static file.CSVConverter.getTaskFromString;
+
+
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private Path file;
-
+    private final static String HEADER = "id,type,name,status,description,epic\n";
     public FileBackedTaskManager(InMemoryHistoryManager history, Path file) {
         super(history);
         this.file = file;
@@ -98,13 +102,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public void save() {
-        StringBuilder outputString = new StringBuilder("id,type,name,status,description,epic\n");
+        StringBuilder outputString = new StringBuilder(HEADER);
         for (Task task:tasks.values())
-            outputString.append(toString(task));
+            outputString.append(CSVConverter.converTaskToString(task));
         for (Epic epic:epics.values())
-            outputString.append(toString(epic));
+            outputString.append(CSVConverter.converTaskToString(epic));
         for (SubTask subTask:subTasks.values())
-            outputString.append(toString(subTask));
+            outputString.append(CSVConverter.converTaskToString(subTask));
         try {
             Files.writeString(file, outputString.toString());
         } catch (IOException e) {
@@ -125,53 +129,31 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             lines.removeFirst();
             //Перебираем строки
             for (String s:lines) {
-                manager.getTaskFromString(s);
+                Task task = getTaskFromString(s);
+                switch (task.getType()) {
+                    case TaskType.Task -> {
+                        manager.tasks.put(task.getId(), task);
+                    }
+                    case TaskType.Epic -> {
+                        Epic epic = (Epic) task;
+                        manager.epics.put(epic.getId(), epic);
+                    }
+                    case TaskType.SubTask -> {
+                        SubTask subTask = (SubTask) task;
+                        Epic epic = manager.epics.get(subTask.getEpicId());
+                        epic.addSubTask(subTask);
+                        manager.subTasks.put(subTask.getId(), subTask);
+                    }
+                }
+                if(task.getId()>manager.idCount) {
+                    manager.idCount = task.getId();
+                }
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файла: ",e);
         }
 
         return manager;
-    }
-
-    //метод для записи данных из файла в мапы
-    public void getTaskFromString(String inputString) {
-        String[] taskStringArray = inputString.split(",");
-
-        int id = Integer.parseInt(taskStringArray[0]);
-        TaskType type = TaskType.valueOf(taskStringArray[1]);
-        String name = taskStringArray[2];
-        Status status = Status.valueOf(taskStringArray[3]);
-        String description = taskStringArray[4];
-
-        switch (type) {
-            case TaskType.Task -> {
-                Task task = new Task(name,description,status);
-                task.setId(id);
-                tasks.put(id,task);
-            }
-            case TaskType.Epic -> {
-                Epic epic = new Epic(name,description);
-                epic.setId(id);
-                epic.setStatus(status);
-                epics.put(id,epic);
-            }
-            case TaskType.SubTask -> {
-                int epicId = Integer.parseInt(taskStringArray[5]);
-                SubTask subTask = new SubTask(name,description,status);
-                subTask.setId(id);
-                subTask.setEpicId(epicId);
-                Epic epic = epics.get(epicId);
-                epic.addSubTask(subTask);
-                subTasks.put(id,subTask);
-            }
-        }
-        idCount = id;
-    }
-
-    public String toString(Task task) {
-        return task.getId() + "," + task.getType() + "," + task.getName() + "," +
-                task.getStatus() + "," + task.getDescription() + "," + task.getEpicId() + "\n";
     }
 
     public static void main(String[] args) {
@@ -211,4 +193,3 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         manager.create(task1);
     }
 }
-//ManagerSaveException

@@ -1,10 +1,8 @@
 package file;
 
-import java.io.IOException;
-
 public class ManagerSaveException extends  RuntimeException {
 
-    public ManagerSaveException(String s, IOException e) {
-        super(s,e);
+    public ManagerSaveException(String s, Throwable cause) {
+        super(s,cause);
     }
 }
