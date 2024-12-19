@@ -33,7 +33,6 @@ public interface TaskManager {
 
     SubTask create(SubTask subTask);
 
-    //не уверена, что тут нужно возвращать какое-то значение
     Task update(Task task);
 
     Epic update(Epic epic);
