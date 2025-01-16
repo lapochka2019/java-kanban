@@ -9,10 +9,11 @@ import java.time.format.DateTimeFormatter;
 public class CSVConverter {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER  = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
     public static String converTaskToString(Task task) {
         return task.getId() + "," + task.getType() + "," + task.getName() + "," +
                 task.getStatus() + "," + task.getDescription() + "," + task.getEpicId() +
-                "," + task.getDuration().toMinutes() + "," + (task.getStartTime()==null?null:task.getStartTime().format(DATE_TIME_FORMATTER)) + "\n";
+                "," + task.getDuration().toMinutes() + "," + (task.getStartTime() == null ? null : task.getStartTime().format(DATE_TIME_FORMATTER)) + "\n";
     }
 
     public static Task getTaskFromString(String inputString) {
