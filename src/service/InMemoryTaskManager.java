@@ -168,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
             calculateEpicDuration(epicId, subTask.getDuration());
             setEpicStartTime(epicId,subTask.getStartTime());
             setEpicEndTime(epicId,subTask.getEndTime());
-            if (subTask.getStartTime()!=null) {
+            if (subTask.getStartTime() != null) {
                 sortedTasksByTime.add(subTask);
             }
             return subTask;
@@ -189,7 +189,7 @@ public class InMemoryTaskManager implements TaskManager {
             savedTask.setName(task.getName());
             savedTask.setDescription(task.getDescription());
             savedTask.setStatus(task.getStatus());
-            if(task.getStartTime()!=null){
+            if (task.getStartTime() != null) {
                 sortedTasksByTime.add(task);
             }
             return savedTask;
@@ -219,7 +219,7 @@ public class InMemoryTaskManager implements TaskManager {
             savedSubTask.setName(subTask.getName());
             savedSubTask.setDescription(subTask.getDescription());
             savedSubTask.setStatus(subTask.getStatus());
-            if(subTask.getStartTime()!=null){
+            if (subTask.getStartTime() != null) {
                 sortedTasksByTime.add(subTask);
             }
             calculateEpicStatus(savedSubTask.getEpicId());
@@ -244,7 +244,7 @@ public class InMemoryTaskManager implements TaskManager {
         //получили подзадачи
         ArrayList<Integer> epicSubTasks = epic.getSubTusks();
         //удаляем каждую подзадачу из HashMap
-        for (int subTusk:epicSubTasks) {
+        for (int subTusk : epicSubTasks) {
             sortedTasksByTime.remove(subTasks.get(subTusk));
             subTasks.remove(subTusk);
             history.remove(subTusk);
@@ -268,8 +268,8 @@ public class InMemoryTaskManager implements TaskManager {
     /**Получение списка всех подзадач определённого эпика.**/
     public ArrayList<SubTask> getEpicSubTasks(int id) {
         ArrayList<SubTask> epicSubTasks = new ArrayList<>();
-        epics.get(id).getSubTusks().stream().
-                forEach(s->epicSubTasks.add(subTasks.get(s)));
+        epics.get(id).getSubTusks().stream()
+                .forEach(s -> epicSubTasks.add(subTasks.get(s)));
         return epicSubTasks;
     }
 
