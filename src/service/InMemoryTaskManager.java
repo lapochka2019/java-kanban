@@ -25,7 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         subTasks = new HashMap<>();
         this.history = history;
-        sortedTasksByTime = new TreeSet<Task>((t1,t2)->t1.getStartTime().compareTo(t2.getStartTime()));
+        sortedTasksByTime = new TreeSet<Task>((t1,t2) -> t1.getStartTime().compareTo(t2.getStartTime()));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
         return ++idCount;
     }
 
-    public TreeSet<Task> getPrioritizedTasks(){
+    public TreeSet<Task> getPrioritizedTasks() {
         return new TreeSet<>(sortedTasksByTime);
     }
 
@@ -155,7 +155,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTask == null) {
             return null;
         }
-        if(checkTaskTime(subTask)){
+        if (checkTaskTime(subTask)) {
             int epicId = subTask.getEpicId();
             if (!epics.containsKey(epicId)) {
                 return null;
@@ -168,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
             calculateEpicDuration(epicId, subTask.getDuration());
             setEpicStartTime(epicId,subTask.getStartTime());
             setEpicEndTime(epicId,subTask.getEndTime());
-            if(subTask.getStartTime()!=null){
+            if (subTask.getStartTime()!=null) {
                 sortedTasksByTime.add(subTask);
             }
             return subTask;
@@ -314,7 +314,7 @@ public class InMemoryTaskManager implements TaskManager {
     private void setEpicStartTime (int epicId, LocalDateTime startTime) {
         Epic epic = epics.get(epicId);
         LocalDateTime epicStartTime = epic.getStartTime();
-        if (epicStartTime == null || startTime.isBefore(epicStartTime)){
+        if (epicStartTime == null || startTime.isBefore(epicStartTime)) {
             epicStartTime = startTime;
         }
     }
