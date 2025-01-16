@@ -22,9 +22,9 @@ public class CSVConverter {
         String name = taskStringArray[2];
         Status status = Status.valueOf(taskStringArray[3]);
         String description = taskStringArray[4];
-        Integer epicId = taskStringArray[5].equals("null")?null:Integer.parseInt(taskStringArray[5]);
+        Integer epicId = taskStringArray[5].equals("null") ? null : Integer.parseInt(taskStringArray[5]);
         Duration duration = Duration.ofMinutes(Integer.parseInt(taskStringArray[6]));
-        LocalDateTime startTime = taskStringArray[7].equals("null")?null:LocalDateTime.parse(taskStringArray[7],DATE_TIME_FORMATTER);
+        LocalDateTime startTime = taskStringArray[7].equals("null") ? null : LocalDateTime.parse(taskStringArray[7],DATE_TIME_FORMATTER);
 
         switch (type) {
             case TaskType.Task -> {

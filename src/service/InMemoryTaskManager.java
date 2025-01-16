@@ -129,7 +129,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (checkTaskTime(task)) {
             task.setId(generateId());
             tasks.put(task.getId(),task);
-            if(task.getStartTime()!=null){
+            if (task.getStartTime() != null) {
                 sortedTasksByTime.add(task);
             }
             return task;
@@ -270,9 +270,6 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<SubTask> epicSubTasks = new ArrayList<>();
         epics.get(id).getSubTusks().stream().
                 forEach(s->epicSubTasks.add(subTasks.get(s)));
-//        for (Integer subTuskId:epics.get(id).getSubTusks()) {
-//            epicSubTasks.add(subTasks.get(subTuskId));
-//        }
         return epicSubTasks;
     }
 
@@ -309,33 +306,32 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void calculateEpicDuration (int epicId, Duration duration){
+    private void calculateEpicDuration (int epicId, Duration duration) {
         Epic epic = epics.get(epicId);
         epic.setDuration(epic.getDuration().plus(duration));
     }
 
-    private void setEpicStartTime (int epicId, LocalDateTime startTime){
+    private void setEpicStartTime (int epicId, LocalDateTime startTime) {
         Epic epic = epics.get(epicId);
         LocalDateTime epicStartTime = epic.getStartTime();
-        if (epicStartTime==null||startTime.isBefore(epicStartTime)){
-            epicStartTime=startTime;
+        if (epicStartTime == null || startTime.isBefore(epicStartTime)){
+            epicStartTime = startTime;
         }
     }
 
-    private void setEpicEndTime (int epicId, LocalDateTime endTime){
+    private void setEpicEndTime (int epicId, LocalDateTime endTime) {
         Epic epic = epics.get(epicId);
         LocalDateTime epicEndTime = epic.getEndTime();
-        if (epicEndTime==null||endTime.isAfter(epicEndTime)){
-            epicEndTime=endTime;
+        if (epicEndTime == null || endTime.isAfter(epicEndTime)) {
+            epicEndTime = endTime;
         }
     }
 
-    private boolean checkTaskTime(Task task){
+    private boolean checkTaskTime(Task task) {
         return sortedTasksByTime.stream()
                 .filter(t -> t.getId() != task.getId())
                 .noneMatch(t ->
                         t.getEndTime().isAfter(task.getStartTime()) && t.getStartTime().isBefore(task.getEndTime())
                 );
     }
-
 }
