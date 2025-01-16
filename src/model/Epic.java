@@ -14,13 +14,13 @@ public class Epic extends Task {
     }
 
     @Override
-    public LocalDateTime getEndTime(){
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW, Duration.ofMinutes(0), null);
-        endTime=null;
+        endTime = null;
     }
 
     public ArrayList<Integer> getSubTusks() {
