@@ -1,6 +1,7 @@
 package service;
 
 import file.FileBackedTaskManager;
+import file.ManagerSaveException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -13,15 +14,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static file.FileBackedTaskManager.loadFromFile;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.time.Month.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Класс FileBackedTaskManager")
 public class FileBackedTaskManagerTest {
     FileBackedTaskManager manager;
-
+    InMemoryHistoryManager history = new InMemoryHistoryManager();
     //Пустое сохранение
     @DisplayName("Тест. Сохранить пустой менеджер")
     @Test
@@ -48,18 +53,17 @@ public class FileBackedTaskManagerTest {
     @Test
     public void shouldReturnTrueIfResultFileIsNotEmpty() throws IOException {
         Path file = Paths.get("test3.csv");
-        InMemoryHistoryManager history = new InMemoryHistoryManager();
-        FileBackedTaskManager manager = new FileBackedTaskManager(history,file);
+        manager = new FileBackedTaskManager(history,file);
 
-        Task task1 = new Task("Task1","Description1", Status.NEW);
-        Task task2 = new Task("Task2","Description2", Status.DONE);
+        Task task1 = new Task("Task1","Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 0));
+        Task task2 = new Task("Task2","Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 20));
         Epic epic1 = new Epic("Epic1", "Description1");
         Epic epic2 = new Epic("Epic2", "Description2");
-        SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS);
-        SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE);
-        SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW);
-        SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW);
-        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS);
+        SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 40));
+        SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 1, 0));
+        SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 1, 20));
+        SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 2, 0));
+        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS, Duration.ofMinutes(10),LocalDateTime.of(2022, JANUARY, 1, 2, 30));
 
         manager.create(task1);
         manager.create(task2);
@@ -93,5 +97,15 @@ public class FileBackedTaskManagerTest {
         assertEquals(2, manager.getTasks().size());
         assertEquals(2, manager.getEpics().size());
         assertEquals(5, manager.getSubTasks().size());
+    }
+
+    //Обработка ошибки
+    //Наверное, лучше было бы вызвать метод с ошибкой, но я не придумала, как вызвать жту ошибку
+    @DisplayName("Тест. Обработка ошибки")
+    @Test
+    public void shouldReturnManagerSaveException() {
+        Path file = Paths.get("test4.csv");
+
+        assertDoesNotThrow(()->loadFromFile(file));
     }
 }
