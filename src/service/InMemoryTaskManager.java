@@ -306,12 +306,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void calculateEpicDuration (int epicId, Duration duration) {
+    private void calculateEpicDuration(int epicId, Duration duration) {
         Epic epic = epics.get(epicId);
         epic.setDuration(epic.getDuration().plus(duration));
     }
 
-    private void setEpicStartTime (int epicId, LocalDateTime startTime) {
+    private void setEpicStartTime(int epicId, LocalDateTime startTime) {
         Epic epic = epics.get(epicId);
         LocalDateTime epicStartTime = epic.getStartTime();
         if (epicStartTime == null || startTime.isBefore(epicStartTime)) {
@@ -319,7 +319,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void setEpicEndTime (int epicId, LocalDateTime endTime) {
+    private void setEpicEndTime(int epicId, LocalDateTime endTime) {
         Epic epic = epics.get(epicId);
         LocalDateTime epicEndTime = epic.getEndTime();
         if (epicEndTime == null || endTime.isAfter(epicEndTime)) {
