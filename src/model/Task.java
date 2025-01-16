@@ -2,7 +2,6 @@ package model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Task {
@@ -83,7 +82,7 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime(){
+    public LocalDateTime getEndTime() {
         return startTime.plus(duration);
     }
 
@@ -91,6 +90,7 @@ public class Task {
     public Integer getEpicId() {
         return null;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
