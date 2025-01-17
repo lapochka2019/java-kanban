@@ -86,11 +86,6 @@ public class Task {
         return startTime.plus(duration);
     }
 
-    //Для упрощения сохранений данных в файл
-    public Integer getEpicId() {
-        return null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)

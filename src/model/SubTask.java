@@ -14,7 +14,6 @@ public class SubTask extends Task {
         super(name, description, status);
     }
 
-    @Override
     public Integer getEpicId() {
         return epicId;
     }

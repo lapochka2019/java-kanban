@@ -33,8 +33,8 @@ public class InMemoryTaskManager implements TaskManager {
         return ++idCount;
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
-        return new TreeSet<>(sortedTasksByTime);
+    public ArrayList<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortedTasksByTime);
     }
 
     /**Получение списка всех задач.**/
