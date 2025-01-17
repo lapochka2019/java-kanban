@@ -2,17 +2,24 @@ package file;
 
 import model.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class CSVConverter {
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER  = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public static String converTaskToString(Task task) {
         if (TaskType.SubTask.equals(task.getType())) {
             SubTask subTask = (SubTask) task;
             return subTask.getId() + "," + subTask.getType() + "," + subTask.getName() + "," +
-                    subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId() + "\n";
-        } else {
-            return task.getId() + "," + task.getType() + "," + task.getName() + "," +
-                    task.getStatus() + "," + task.getDescription() + "\n";
+                    subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId() +
+                    "," + subTask.getDuration().toMinutes() + "," + (subTask.getStartTime() == null ? null : subTask.getStartTime().format(DATE_TIME_FORMATTER)) + "\n";
         }
+        return task.getId() + "," + task.getType() + "," + task.getName() + "," +
+                task.getStatus() + "," + task.getDescription() + "," + null +
+                "," + task.getDuration().toMinutes() + "," + (task.getStartTime() == null ? null : task.getStartTime().format(DATE_TIME_FORMATTER)) + "\n";
     }
 
     public static Task getTaskFromString(String inputString) {
@@ -22,22 +29,27 @@ public class CSVConverter {
         String name = taskStringArray[2];
         Status status = Status.valueOf(taskStringArray[3]);
         String description = taskStringArray[4];
+        Integer epicId = taskStringArray[5].equals("null") ? null : Integer.parseInt(taskStringArray[5]);
+        Duration duration = Duration.ofMinutes(Integer.parseInt(taskStringArray[6]));
+        LocalDateTime startTime = taskStringArray[7].equals("null") ? null : LocalDateTime.parse(taskStringArray[7],DATE_TIME_FORMATTER);
 
         switch (type) {
             case TaskType.Task -> {
-                Task task = new Task(name,description,status);
+                Task task = new Task(name,description,status,duration,startTime);
                 task.setId(id);
                 return task;
             }
             case TaskType.Epic -> {
                 Epic epic = new Epic(name,description);
+                epic.setDuration(duration);
+                epic.setStartTime(startTime);
                 epic.setId(id);
                 epic.setStatus(status);
                 return epic;
             }
             case TaskType.SubTask -> {
-                int epicId = Integer.parseInt(taskStringArray[5]);
-                SubTask subTask = new SubTask(name,description,status);
+
+                SubTask subTask = new SubTask(name,description,status,duration,startTime);
                 subTask.setId(id);
                 subTask.setEpicId(epicId);
                 return subTask;

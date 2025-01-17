@@ -8,8 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static java.time.Month.JANUARY;
 import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Класс InMemoryHistoryManager")
 class InMemoryHistoryManagerTest {
@@ -17,15 +20,16 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     public void init(){
         taskManager = (InMemoryTaskManager) Managers.getDefault();
-        Task task1 = new Task("Task1","Description1", Status.NEW);
-        Task task2 = new Task("Task2","Description2", Status.DONE);
+        Task task1 = new Task("Task1","Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 0));
+        Task task2 = new Task("Task2","Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 20));
         Epic epic1 = new Epic("Epic1", "Description1");
         Epic epic2 = new Epic("Epic2", "Description2");
-        SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS);
-        SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE);
-        SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW);
-        SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW);
-        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS);
+        SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 40));
+        SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 1, 0));
+        SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 1, 20));
+        SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 2, 0));
+        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS, Duration.ofMinutes(10),LocalDateTime.of(2022, JANUARY, 1, 2, 30));
+
 
         taskManager.create(task1);
         taskManager.create(task2);
