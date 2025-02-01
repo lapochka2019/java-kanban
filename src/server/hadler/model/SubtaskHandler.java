@@ -3,7 +3,6 @@ package server.hadler.model;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import model.SubTask;
-import model.Task;
 import server.hadler.BaseHttpHandler;
 import service.TaskManager;
 
@@ -43,7 +42,7 @@ public class SubtaskHandler extends BaseHttpHandler {
                 int id = subTask.getId();
                 //создать SubTask
                 if (id == 0) {
-                    if(manager.getEpic(subTask.getEpicId()).isEmpty()){
+                    if (manager.getEpic(subTask.getEpicId()).isEmpty()) {
                         sendTaskNotFound(exchange);
                         return;
                     }

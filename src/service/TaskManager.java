@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 public interface TaskManager {
     int generateId();
+
     TreeSet<Task> sortedTasksByTime = null;
     InMemoryHistoryManager history = null;
 

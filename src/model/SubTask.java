@@ -1,10 +1,7 @@
 package model;
 
-import com.google.gson.reflect.TypeToken;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class SubTask extends Task {
     private int epicId;//"список задач", к которому относится подзадачи

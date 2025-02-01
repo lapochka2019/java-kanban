@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class CSVConverter {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER  = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public static String converTaskToString(Task task) {
         if (TaskType.SubTask.equals(task.getType())) {
@@ -31,16 +31,16 @@ public class CSVConverter {
         String description = taskStringArray[4];
         Integer epicId = taskStringArray[5].equals("null") ? null : Integer.parseInt(taskStringArray[5]);
         Duration duration = Duration.ofMinutes(Integer.parseInt(taskStringArray[6]));
-        LocalDateTime startTime = taskStringArray[7].equals("null") ? null : LocalDateTime.parse(taskStringArray[7],DATE_TIME_FORMATTER);
+        LocalDateTime startTime = taskStringArray[7].equals("null") ? null : LocalDateTime.parse(taskStringArray[7], DATE_TIME_FORMATTER);
 
         switch (type) {
             case TaskType.Task -> {
-                Task task = new Task(name,description,status,duration,startTime);
+                Task task = new Task(name, description, status, duration, startTime);
                 task.setId(id);
                 return task;
             }
             case TaskType.Epic -> {
-                Epic epic = new Epic(name,description);
+                Epic epic = new Epic(name, description);
                 epic.setDuration(duration);
                 epic.setStartTime(startTime);
                 epic.setId(id);
@@ -49,7 +49,7 @@ public class CSVConverter {
             }
             case TaskType.SubTask -> {
 
-                SubTask subTask = new SubTask(name,description,status,duration,startTime);
+                SubTask subTask = new SubTask(name, description, status, duration, startTime);
                 subTask.setId(id);
                 subTask.setEpicId(epicId);
                 return subTask;

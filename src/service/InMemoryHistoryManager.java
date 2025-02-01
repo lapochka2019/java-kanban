@@ -17,11 +17,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-       //Если Task пустой
-       if (task == null) {
-           return;
-       }
-       //Получается я тут в любом случае вызываю метод удаления?
+        //Если Task пустой
+        if (task == null) {
+            return;
+        }
+        //Получается я тут в любом случае вызываю метод удаления?
         removeNode(task.getId());
         Node newNode = new Node(task);
         linkLast(newNode);
