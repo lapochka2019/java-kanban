@@ -1,8 +1,11 @@
 package model;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
     private ArrayList<Integer> subTasksId = new ArrayList<>();//список подзадач, относящихся к данному "списку"
@@ -46,10 +49,11 @@ public class Epic extends Task {
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() + '\'' +
                 ", SubTasks[";
-        for (Integer subTask: subTasksId) {
+        for (Integer subTask : subTasksId) {
             string += subTask.toString() + "\n";
         }
         string += "]}";
         return string;
     }
 }
+

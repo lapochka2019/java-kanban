@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -17,8 +18,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, SubTask> subTasks;
     protected TreeSet<Task> sortedTasksByTime;
     protected int idCount = 0;
-    //пришлось убрать приватность для теста
-    InMemoryHistoryManager history;
+    protected InMemoryHistoryManager history;
 
     public InMemoryTaskManager(InMemoryHistoryManager history) {
         tasks = new HashMap<>();
@@ -29,15 +29,21 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public ArrayList<Task> getHistory(){
+        return history.getHistory();
+    }
+
+    @Override
     public int generateId() {
         return ++idCount;
     }
 
+    @Override
     public ArrayList<Task> getPrioritizedTasks() {
         return new ArrayList<>(sortedTasksByTime);
     }
 
-    /**Получение списка всех задач.**/
+    /*Получение списка всех задач*/
     @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
@@ -53,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subTasks.values());
     }
 
-    /**Удаление всех задач.**/
+    /*Удаление всех задач*/
     @Override
     public void clearTasks() {
         for (Integer id : tasks.keySet()) {
@@ -89,38 +95,38 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    /**Получение по идентификатору**/
+    /*Получение по идентификатору*/
     @Override
-    public Task getTask(int id) {
+    public Optional<Task> getTask(int id) {
         if (tasks.containsKey(id)) {
             Task task = tasks.get(id);
             history.add(task);
-            return task;
+            return Optional.of(task);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public Epic getEpic(int id) {
+    public Optional<Epic> getEpic(int id) {
         if (epics.containsKey(id)) {
             Epic epic = epics.get(id);
             history.add(epic);
-            return epic;
+            return Optional.of(epic);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public SubTask getSubTask(int id) {
+    public Optional<SubTask> getSubTask(int id) {
         if (subTasks.containsKey(id)) {
             SubTask subTask = subTasks.get(id);
             history.add(subTask);
-            return subTask;
+            return Optional.of(subTask);
         }
-        return null;
+        return Optional.empty();
     }
 
-    /**Создание.**/
+    /*Создание*/
     @Override
     public Task create(Task task) {
         if (task == null) {
@@ -177,7 +183,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    /**Обновление.**/
+    /*Обновление*/
     //не уверена, что тут нужно возвращать какое-то значение
     @Override
     public Task update(Task task) {
@@ -229,7 +235,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    /**Удаление по идентификатору.**/
+    /*Удаление по идентификатору*/
     @Override
     public void deleteTask(int id) {
         sortedTasksByTime.remove(tasks.get(id));
@@ -265,7 +271,7 @@ public class InMemoryTaskManager implements TaskManager {
         history.remove(id);
     }
 
-    /**Получение списка всех подзадач определённого эпика.**/
+    /*Получение списка всех подзадач определённого эпика*/
     public ArrayList<SubTask> getEpicSubTasks(int id) {
         ArrayList<SubTask> epicSubTasks = new ArrayList<>();
         epics.get(id).getSubTusks().stream()

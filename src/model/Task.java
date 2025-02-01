@@ -1,19 +1,22 @@
 package model;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class Task {
     private int id;
-    private String  name;
+    private String name;
     private String description;
     private Status status;
     private Duration duration;
     private LocalDateTime startTime;
 
 
-    public Task(String name, String description, Status status,Duration duration,LocalDateTime startTime) {
+    public Task(String name, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;

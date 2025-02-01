@@ -1,11 +1,5 @@
 id,type,name,status,description,epic
-1,Task,Task1,NEW,Description1,null,15,12.01.2025 18:52
-2,Task,Task2,DONE,Description2,null,15,12.01.2025 18:52
-10,Task,Task1,NEW,Description1,null,15,12.01.2025 18:52
-3,Epic,Epic1,IN_PROGRESS,Description1,null,45,null
-4,Epic,Epic2,IN_PROGRESS,Description2,null,30,null
-5,SubTask,Subtask1,IN_PROGRESS,Description1,3,15,12.01.2025 18:52
-6,SubTask,Subtask2,DONE,Description2,3,15,12.01.2025 18:52
-7,SubTask,Subtask3,NEW,Description3,3,15,12.01.2025 18:52
-8,SubTask,Subtask4,NEW,Description4,4,15,12.01.2025 18:52
-9,SubTask,Subtask5,IN_PROGRESS,Description5,4,15,12.01.2025 18:52
+1,Task,Task1,NEW,Description1,null,15,31.01.2025 12:51
+4,Task,Task1,NEW,Description1,null,15,31.01.2025 12:51
+2,Epic,Epic1,NEW,Description1,null,0,null
+3,Epic,Epic2,NEW,Description2,null,0,null
