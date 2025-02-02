@@ -3,7 +3,6 @@ package server.hadler.model;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import model.Epic;
-import model.Task;
 import server.hadler.BaseHttpHandler;
 import service.TaskManager;
 
@@ -114,7 +113,7 @@ public class EpicHandler extends BaseHttpHandler {
             sendTaskNotFound(exchange);
             return;
         }
-        Task result = manager.update(epic);
+        Epic result = manager.update(epic);
         if (result != null) {
             sendSuccessfully(exchange, "Эпик обновлен успешно!", 201);
         } else {
