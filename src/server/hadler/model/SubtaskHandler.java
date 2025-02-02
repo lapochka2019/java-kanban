@@ -3,6 +3,7 @@ package server.hadler.model;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import model.SubTask;
+import model.Task;
 import server.hadler.BaseHttpHandler;
 import service.TaskManager;
 
@@ -28,60 +29,82 @@ public class SubtaskHandler extends BaseHttpHandler {
         }
         String methodType = exchange.getRequestMethod();
         Optional<Integer> subtaskId = getId(exchange);
-        //"/subtasks"
-        if (subtaskId.isEmpty()) {
+        if (subtaskId.isEmpty()) { //"/subtasks"
             if (isGet(methodType)) {
                 sendSuccessfullyDefault(exchange, gson.toJson(manager.getSubTasks()));
             } else if (isPost(methodType)) {
-                InputStream inputStream = exchange.getRequestBody();
-                String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                if (jsonString.isEmpty()) {
-                    sendLengthRequired(exchange);
-                }
-                SubTask subTask = gson.fromJson(jsonString, SubTask.class);
-                int id = subTask.getId();
-                //создать SubTask
-                if (id == 0) {
-                    if (manager.getEpic(subTask.getEpicId()).isEmpty()) {
-                        sendTaskNotFound(exchange);
-                        return;
-                    }
-                    SubTask result = manager.create(subTask);
-                    if (result != null) {
-                        sendSuccessfully(exchange, "Подзадача создана успешно!", 201);
-                    } else {
-                        sendTimeTaken(exchange);
-                    }
-                } else {
-                    if (manager.getEpic(subTask.getEpicId()).isEmpty()) {
-                        sendTaskNotFound(exchange);
-                        return;
-                    }
-                    SubTask result = manager.update(subTask);
-                    if (result != null) {
-                        sendSuccessfully(exchange, "Подзадача обновлена успешно!", 201);
-                    } else {
-                        sendTimeTaken(exchange);
-                    }
-                }
+                parseSubtaskPostRequest(exchange);
             } else {
                 sendNotImplemented(exchange);
             }
-            //"/subtasks/{id}"
-        } else {
+        } else { //"/subtasks/{id}"
             if (isGet(methodType)) {
-                Optional<SubTask> optionalSubTask = manager.getSubTask(subtaskId.get());
-                if (optionalSubTask.isEmpty()) {
-                    sendTaskNotFound(exchange);
-                } else {
-                    sendSuccessfullyDefault(exchange, gson.toJson(optionalSubTask.get()));
-                }
+                getSubtaskById(exchange, subtaskId);
             } else if (isDelete(methodType)) {
-                manager.deleteSubTusk(subtaskId.get());
-                sendSuccessfullyDefault(exchange, "Подзадача удалена успешно!");
+                deleteSubtaskById(exchange, subtaskId);
             } else {
                 sendNotImplemented(exchange);
             }
+        }
+    }
+
+    //удалить подзадачу
+    private void deleteSubtaskById(HttpExchange exchange, Optional<Integer> subtaskId) throws IOException {
+        manager.deleteSubTusk(subtaskId.get());
+        sendSuccessfullyDefault(exchange, "Подзадача удалена успешно!");
+    }
+
+    //получить подзадачу по id
+    private void getSubtaskById(HttpExchange exchange, Optional<Integer> subtaskId) throws IOException {
+        Optional<SubTask> optionalSubTask = manager.getSubTask(subtaskId.get());
+        if (optionalSubTask.isEmpty()) {
+            sendTaskNotFound(exchange);
+        } else {
+            sendSuccessfullyDefault(exchange, gson.toJson(optionalSubTask.get()));
+        }
+    }
+
+    //разобрать POST запрос
+    private void parseSubtaskPostRequest(HttpExchange exchange) throws IOException {
+        InputStream inputStream = exchange.getRequestBody();
+        String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        if (jsonString.isEmpty()) {
+            sendLengthRequired(exchange);
+            return;
+        }
+        SubTask subTask = gson.fromJson(jsonString, SubTask.class);
+        if (subTask.getId() == 0) {
+            createSubtask(exchange, subTask);
+        } else {
+            updateSubtask(exchange, subTask);
+        }
+    }
+
+    //создать задачу
+    private void createSubtask(HttpExchange exchange, SubTask subTask) throws IOException {
+        if (manager.getEpic(subTask.getEpicId()).isEmpty()) {
+            sendTaskNotFound(exchange);
+            return;
+        }
+        SubTask result = manager.create(subTask);
+        if (result != null) {
+            sendSuccessfully(exchange, "Подзадача создана успешно!", 201);
+        } else {
+            sendTimeTaken(exchange);
+        }
+    }
+
+    //обновить задачу
+    private void updateSubtask(HttpExchange exchange, SubTask subTask) throws IOException {
+        if (manager.getEpic(subTask.getEpicId()).isEmpty()) {
+            sendTaskNotFound(exchange);
+            return;
+        }
+        SubTask result = manager.update(subTask);
+        if (result != null) {
+            sendSuccessfully(exchange, "Подзадача обновлена успешно!", 201);
+        } else {
+            sendTimeTaken(exchange);
         }
     }
 }

@@ -42,11 +42,6 @@ public class HttpTaskServer {
                 .create();
     }
 
-    public static void main(String[] args) throws IOException {
-        HttpTaskServer httpTaskServer = new HttpTaskServer(Managers.getDefault());
-        httpTaskServer.startServer();
-    }
-
     public void startServer() {
         server.start();
         System.out.println("HTTP сервер запущен. Порт:" + PORT);

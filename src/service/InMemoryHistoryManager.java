@@ -17,11 +17,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        //Если Task пустой
         if (task == null) {
             return;
         }
-        //Получается я тут в любом случае вызываю метод удаления?
         removeNode(task.getId());
         Node newNode = new Node(task);
         linkLast(newNode);
@@ -45,7 +43,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void removeNode(int id) {
-        //Если данный индекс не найден в истории, ничего не делаем?
         if (!history.containsKey(id)) {
             return;
         }
@@ -83,7 +80,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
-    //Лектор рекомендовал сделать данный класс private static, так как в оригинальном LinkedList класс Node реализован именно так
     private static class Node {
         Task task;
         Node previous;

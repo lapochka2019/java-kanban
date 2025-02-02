@@ -155,41 +155,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         return manager;
     }
-
-    public static void main(String[] args) {
-        Path file = Paths.get("newFile.csv");
-        InMemoryHistoryManager history = new InMemoryHistoryManager();
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(history, file);
-        Task task1 = new Task("Task1", "Description1", Status.NEW);
-        Task task2 = new Task("Task2", "Description2", Status.DONE);
-        Epic epic1 = new Epic("Epic1", "Description1");
-        Epic epic2 = new Epic("Epic2", "Description2");
-        SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS);
-        SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE);
-        SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW);
-        SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW);
-        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS);
-
-        taskManager.create(task1);
-        taskManager.create(task2);
-
-        taskManager.create(epic1);
-        taskManager.create(epic2);
-
-        subTask1.setEpicId(epic1.getId());
-        subTask2.setEpicId(epic1.getId());
-        subTask3.setEpicId(epic1.getId());
-
-        subTask4.setEpicId(epic2.getId());
-        subTask5.setEpicId(epic2.getId());
-
-        taskManager.create(subTask1);
-        taskManager.create(subTask2);
-        taskManager.create(subTask3);
-        taskManager.create(subTask4);
-        taskManager.create(subTask5);
-
-        FileBackedTaskManager manager = loadFromFile(file);
-        manager.create(task1);
-    }
 }

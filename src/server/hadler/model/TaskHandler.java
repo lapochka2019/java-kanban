@@ -28,55 +28,78 @@ public class TaskHandler extends BaseHttpHandler {
         }
         String methodType = exchange.getRequestMethod();
         Optional<Integer> taskId = getId(exchange);
-        //"/tasks"
-        if (taskId.isEmpty()) {
+        if (taskId.isEmpty()) { //"/tasks"
             if (isGet(methodType)) {
                 sendSuccessfullyDefault(exchange, gson.toJson(manager.getTasks()));
             } else if (isPost(methodType)) {
-                InputStream inputStream = exchange.getRequestBody();
-                String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                if (jsonString.isEmpty()) {
-                    sendLengthRequired(exchange);
-                }
-                Task task = gson.fromJson(jsonString, Task.class);
-                int id = task.getId();
-                if (id == 0) {
-                    Task result = manager.create(task);
-                    if (result != null) {
-                        sendSuccessfully(exchange, "Задача создана успешно!", 201);
-                    } else {
-                        sendTimeTaken(exchange);
-                    }
-                } else {
-                    if (manager.getTask(id).isEmpty()) {
-                        sendTaskNotFound(exchange);
-                        return;
-                    }
-                    Task result = manager.update(task);
-                    if (result != null) {
-                        sendSuccessfully(exchange, "Задача обновлена успешно!", 201);
-                    } else {
-                        sendTimeTaken(exchange);
-                    }
-                }
+                parseTaskPostRequest(exchange);
             } else {
                 sendNotImplemented(exchange);
             }
-            //"/tasks/{id}"
-        } else {
+        } else { //"/tasks/{id}"
             if (isGet(methodType)) {
-                Optional<Task> optionalTask = manager.getTask(taskId.get());
-                if (optionalTask.isEmpty()) {
-                    sendTaskNotFound(exchange);
-                } else {
-                    sendSuccessfullyDefault(exchange, gson.toJson(optionalTask.get()));
-                }
+                getTaskById(taskId, exchange);
             } else if (isDelete(methodType)) {
-                manager.deleteTask(taskId.get());
-                sendSuccessfullyDefault(exchange, "Задача удалена успешно!");
+                deleteTaskById(taskId, exchange);
             } else {
                 sendNotImplemented(exchange);
             }
+        }
+    }
+
+    //получить задачу по id
+    private void getTaskById(Optional<Integer> taskId, HttpExchange exchange) throws IOException {
+        Optional<Task> optionalTask = manager.getTask(taskId.get());
+        if (optionalTask.isEmpty()) {
+            sendTaskNotFound(exchange);
+        } else {
+            sendSuccessfullyDefault(exchange, gson.toJson(optionalTask.get()));
+        }
+    }
+
+    //удалить задачу
+    private void deleteTaskById(Optional<Integer> taskId, HttpExchange exchange) throws IOException {
+        manager.deleteTask(taskId.get());
+        sendSuccessfullyDefault(exchange, "Задача удалена успешно!");
+    }
+
+    //обработать пост запрос для задачи
+    private void parseTaskPostRequest(HttpExchange exchange) throws IOException {
+        InputStream inputStream = exchange.getRequestBody();
+        String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        if (jsonString.isEmpty()) {
+            sendLengthRequired(exchange);
+            return;
+        }
+        Task task = gson.fromJson(jsonString, Task.class);
+        if (task.getId() == 0) {
+            createTask(exchange, task);
+        } else {
+            updateTask(exchange, task);
+        }
+    }
+
+    //создать задачу
+    private void createTask(HttpExchange exchange, Task task) throws IOException {
+        Task result = manager.create(task);
+        if (result != null) {
+            sendSuccessfully(exchange, "Задача создана успешно!", 201);
+        } else {
+            sendTimeTaken(exchange);
+        }
+    }
+
+    //обновить задачу
+    private void updateTask(HttpExchange exchange, Task task) throws IOException {
+        if (manager.getTask(task.getId()).isEmpty()) {
+            sendTaskNotFound(exchange);
+            return;
+        }
+        Task result = manager.update(task);
+        if (result != null) {
+            sendSuccessfully(exchange, "Задача обновлена успешно!", 201);
+        } else {
+            sendTimeTaken(exchange);
         }
     }
 }
