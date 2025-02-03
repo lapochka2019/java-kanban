@@ -53,7 +53,7 @@ class InMemoryHistoryManagerTest {
     @DisplayName("Тест. Сохраняется ли состояние \"сохраненной\" задачи")
     @Test
     public void shouldReturnTrueIfSavedTaskState(){
-        Task task1 = taskManager.getTask(1);
+        Task task1 = taskManager.getTask(1).get();
         Task task1Update = new Task("Task1Update","Description1Update", Status.NEW);
         task1Update.setId(1);
         taskManager.update(task1Update);
@@ -79,9 +79,9 @@ class InMemoryHistoryManagerTest {
     @Test
     public void shouldReturnTrueIfHistorySaveViewingOrder(){
         ArrayList<Task> sampleList = new ArrayList<>();
-        sampleList.add(taskManager.getTask(1));
-        sampleList.add(taskManager.getEpic(3));
-        sampleList.add(taskManager.getSubTask(5));
+        sampleList.add(taskManager.getTask(1).get());
+        sampleList.add(taskManager.getEpic(3).get());
+        sampleList.add(taskManager.getSubTask(5).get());
         taskManager.getTask(1);
         taskManager.getEpic(3);
         taskManager.getSubTask(5);

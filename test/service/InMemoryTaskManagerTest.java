@@ -21,18 +21,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
 
     InMemoryTaskManager taskManager;
+
     @BeforeEach
-    public void init(){
+    public void init() {
         taskManager = (InMemoryTaskManager) Managers.getDefault();
-        Task task1 = new Task("Task1","Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 0));
-        Task task2 = new Task("Task2","Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 20));
+        Task task1 = new Task("Task1", "Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 0));
+        Task task2 = new Task("Task2", "Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 20));
         Epic epic1 = new Epic("Epic1", "Description1");
         Epic epic2 = new Epic("Epic2", "Description2");
         SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 40));
         SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 1, 0));
         SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 1, 20));
         SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 2, 0));
-        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS, Duration.ofMinutes(10),LocalDateTime.of(2022, JANUARY, 1, 2, 30));
+        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 2, 30));
 
 
         taskManager.create(task1);
@@ -57,16 +58,16 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Тест. Хранятся ли Таски")
     @Test
-    public void shouldReturnTwoIfRealContainsTasks(){
+    public void shouldReturnTwoIfRealContainsTasks() {
         int count = taskManager.getTasks().size();
-        Assertions.assertEquals(2,count);
+        Assertions.assertEquals(2, count);
     }
 
     @DisplayName("Тест. Хранятся ли Эпики")
     @Test
-    public void shouldReturnTwoIfRealContainsEpics(){
+    public void shouldReturnTwoIfRealContainsEpics() {
         int count = taskManager.getEpics().size();
-        Assertions.assertEquals(2,count);
+        Assertions.assertEquals(2, count);
     }
 
     @DisplayName("Тест. Хранятся ли подзадачи")
@@ -87,172 +88,179 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Тест. Все подзадачи Эпика со статусом NEW")
     @Test
-    public void shouldReturnTrueIfStatusIsNew(){
-        Epic epic = taskManager.getEpic(3);
-        for(Integer i: epic.getSubTusks()){
-            SubTask s = taskManager.getSubTask(i);
+    public void shouldReturnTrueIfStatusIsNew() {
+        Epic epic = taskManager.getEpic(3).get();
+        for (Integer i : epic.getSubTusks()) {
+            SubTask s = taskManager.getSubTask(i).get();
             s.setStatus(Status.NEW);
             taskManager.update(s);
         }
-        Assertions.assertEquals(Status.NEW,epic.getStatus());
+        Assertions.assertEquals(Status.NEW, epic.getStatus());
     }
 
     @DisplayName("Тест. Все подзадачи Эпика со статусом DONE")
     @Test
-    public void shouldReturnTrueIfStatusIsDONE(){
-        Epic epic = taskManager.getEpic(3);
-        for(Integer i: epic.getSubTusks()){
-            SubTask s = taskManager.getSubTask(i);
+    public void shouldReturnTrueIfStatusIsDONE() {
+        Epic epic = taskManager.getEpic(3).get();
+        for (Integer i : epic.getSubTusks()) {
+            SubTask s = taskManager.getSubTask(i).get();
             s.setStatus(Status.DONE);
             taskManager.update(s);
         }
-        Assertions.assertEquals(Status.DONE,epic.getStatus());
+        Assertions.assertEquals(Status.DONE, epic.getStatus());
     }
 
     @DisplayName("Тест. Подзадачи Эпика со статусами NEW и DONE")
     @Test
-    public void shouldReturnTrueIfStatusIsInProgress(){
-        Epic epic = taskManager.getEpic(3);
-        for(Integer i: epic.getSubTusks()){
-            SubTask s = taskManager.getSubTask(i);
-            if(i%2==0)
+    public void shouldReturnTrueIfStatusIsInProgress() {
+        Epic epic = taskManager.getEpic(3).get();
+        for (Integer i : epic.getSubTusks()) {
+            SubTask s = taskManager.getSubTask(i).get();
+            if (i % 2 == 0)
                 s.setStatus(Status.NEW);
             else
                 s.setStatus(Status.DONE);
             taskManager.update(s);
         }
-        Assertions.assertEquals(Status.IN_PROGRESS,epic.getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, epic.getStatus());
     }
 
     @DisplayName("Тест. Все подзадачи Эпика со статусом IN_PROGRESS")
     @Test
-    public void shouldReturnTrueIfStatusIsIN_PROGRESS(){
-        Epic epic = taskManager.getEpic(3);
-        for(Integer i: epic.getSubTusks()){
-            SubTask s = taskManager.getSubTask(i);
+    public void shouldReturnTrueIfStatusIsIN_PROGRESS() {
+        Epic epic = taskManager.getEpic(3).get();
+        for (Integer i : epic.getSubTusks()) {
+            SubTask s = taskManager.getSubTask(i).get();
             s.setStatus(Status.IN_PROGRESS);
             taskManager.update(s);
         }
-        Assertions.assertEquals(Status.IN_PROGRESS,epic.getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, epic.getStatus());
     }
 
     @DisplayName("Тест. Получаем Task по id")
     @Test
-    public void shouldReturnTaskIfRealContainsTasks(){
-        Task task1 = new Task("Task1","Description1", Status.NEW);
+    public void shouldReturnTaskIfRealContainsTasks() {
+        Task task1 = new Task("Task1", "Description1", Status.NEW);
         task1.setId(1);
-        Task resultTusk = taskManager.getTask(1);
-        Assertions.assertEquals(task1,resultTusk);
+        Task resultTusk = taskManager.getTask(1).get();
+        Assertions.assertEquals(task1, resultTusk);
     }
 
     @DisplayName("Тест. Получаем Epic по id")
     @Test
-    public void shouldReturnEpicIfRealContainsEpics(){
+    public void shouldReturnEpicIfRealContainsEpics() {
         Epic epic1 = new Epic("Epic1", "Description1");
         epic1.setId(3);
-        Epic resultEpic = taskManager.getEpic(3);
-        Assertions.assertEquals(epic1,resultEpic);
+        Epic resultEpic = taskManager.getEpic(3).get();
+        Assertions.assertEquals(epic1, resultEpic);
     }
 
     @DisplayName("Тест. Получаем SubTask по id")
     @Test
-    public void shouldReturnSubtaskIfRealContainsSubtasks(){
+    public void shouldReturnSubtaskIfRealContainsSubtasks() {
         SubTask subTask1 = new SubTask("Subtusk1", "Description1", Status.IN_PROGRESS);
         subTask1.setId(5);
-        SubTask resultTusk = taskManager.getSubTask(5);
-        Assertions.assertEquals(subTask1,resultTusk);
+        SubTask resultTusk = taskManager.getSubTask(5).get();
+        Assertions.assertEquals(subTask1, resultTusk);
     }
 
     @DisplayName("Тест. Проверка неизменности полей при добавлении в taskManager (кроме id)")
     @Test
-    public void shouldReturnTrueIfTaskBeforeSaveEqualsSavedTask(){
-        Task task3 = new Task("Task3","Description1", Status.NEW);
+    public void shouldReturnTrueIfTaskBeforeSaveEqualsSavedTask() {
+        Task task3 = new Task("Task3", "Description1", Status.NEW);
         taskManager.create(task3);
-        Task savedTask = taskManager.getTask(task3.getId());
+        Task savedTask = taskManager.getTask(task3.getId()).get();
         assertEquals(task3.getName(), savedTask.getName());
-        assertEquals(task3.getDescription(),savedTask.getDescription());
-        assertEquals(task3.getStatus(),savedTask.getStatus());
+        assertEquals(task3.getDescription(), savedTask.getDescription());
+        assertEquals(task3.getStatus(), savedTask.getStatus());
     }
 
     @DisplayName("Тест. Внутри эпиков не должно оставаться неактуальных id подзадач")
     @Test
-    public void shouldReturnTrueIfEpicContainsOnlyActualTasks(){
+    public void shouldReturnTrueIfEpicContainsOnlyActualTasks() {
         ArrayList<SubTask> oldTasks = taskManager.getEpicSubTasks(3);
         SubTask subTask1 = new SubTask("Subtusk1", "Description1", Status.IN_PROGRESS);
         oldTasks.remove(subTask1);
         taskManager.deleteSubTusk(5);
         ArrayList<SubTask> newTasks = taskManager.getEpicSubTasks(3);
-        assertEquals(oldTasks.size(),newTasks.size()+1);
+        assertEquals(oldTasks.size(), newTasks.size() + 1);
     }
 
     //Удалить задачу -> в менеджере меньше задач
     @DisplayName("Тест. Удалить одну задачу")
     @Test
-    public void shouldReturnOneIfRealDeletedTasks(){
+    public void shouldReturnOneIfRealDeletedTasks() {
         taskManager.deleteTask(1);
         int count = taskManager.getTasks().size();
-        Assertions.assertEquals(1,count);
+        Assertions.assertEquals(1, count);
     }
+
     //Удалить эпик -> в менеджере меньше эпиков и подзадач
     @DisplayName("Тест. Удалить один Эпик и все его подзадачи")
     @Test
-    public void shouldReturnOneIfRealDeletedEpics(){
+    public void shouldReturnOneIfRealDeletedEpics() {
         taskManager.deleteEpic(4);
         int count = taskManager.getEpics().size();
-        Assertions.assertEquals(1,count);
+        Assertions.assertEquals(1, count);
         count = taskManager.getSubTasks().size();
-        Assertions.assertEquals(3,count);
+        Assertions.assertEquals(3, count);
     }
+
     //Удалить подзадачу -> в менеджере меньше подзадач
     @DisplayName("Тест. Удалить одну подзадачу")
     @Test
-    public void shouldReturnOneIfRealDeletedSubtasks(){
+    public void shouldReturnOneIfRealDeletedSubtasks() {
         taskManager.deleteSubTusk(5);
         int count = taskManager.getSubTasks().size();
-        Assertions.assertEquals(4,count);
+        Assertions.assertEquals(4, count);
     }
+
     //Удалить все задачи
     @DisplayName("Тест. Удалить все задачи")
     @Test
-    public void shouldReturnNullIfRemoveAllTasks(){
+    public void shouldReturnNullIfRemoveAllTasks() {
         taskManager.clearTasks();
         int count = taskManager.getTasks().size();
-        Assertions.assertEquals(0,count);
+        Assertions.assertEquals(0, count);
     }
+
     //Удалить все эпики
     @DisplayName("Тест. Удалить все эпики")
     @Test
-    public void shouldReturnNullIfRemoveAllEpics(){
+    public void shouldReturnNullIfRemoveAllEpics() {
         taskManager.clearEpics();
         int count = taskManager.getEpics().size();
-        Assertions.assertEquals(0,count);
+        Assertions.assertEquals(0, count);
         count = taskManager.getSubTasks().size();
-        Assertions.assertEquals(0,count);
+        Assertions.assertEquals(0, count);
     }
+
     //Удалить все подзадачи
     @DisplayName("Тест. Удалить все подзадачи")
     @Test
-    public void shouldReturnNullIfRemoveAllSubtasks(){
+    public void shouldReturnNullIfRemoveAllSubtasks() {
         taskManager.clearSubTusks();
         int count = taskManager.getSubTasks().size();
-        Assertions.assertEquals(0,count);
+        Assertions.assertEquals(0, count);
     }
+
     //Обновить Задачу (текст)
     @DisplayName("Тест. Удалить все подзадачи")
     @Test
-    public void shouldReturnTrueIfTaskNameAndTimeChanged(){
-        Task task = new Task("UpdatedTask","Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 2, 0, 0));
+    public void shouldReturnTrueIfTaskNameAndTimeChanged() {
+        Task task = new Task("UpdatedTask", "Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 2, 0, 0));
         task.setId(1);
         taskManager.update(task);
-        Assertions.assertEquals("UpdatedTask",taskManager.getTask(1).getName());
+        Assertions.assertEquals("UpdatedTask", taskManager.getTask(1).get().getName());
     }
+
     //Обновить задачу (время) -> неуспешно
     @DisplayName("Тест. Удалить все подзадачи")
     @Test
-    public void shouldReturnFalseIfTaskTimeNotChanged(){
-        Task task = new Task("UpdatedTask","Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 15));
+    public void shouldReturnFalseIfTaskTimeNotChanged() {
+        Task task = new Task("UpdatedTask", "Description1", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2022, JANUARY, 1, 0, 15));
         task.setId(1);
         taskManager.update(task);
-        Assertions.assertNotEquals("UpdatedTask",taskManager.getTask(1).getName());
+        Assertions.assertNotEquals("UpdatedTask", taskManager.getTask(1).get().getName());
     }
 }

@@ -5,9 +5,19 @@ import model.SubTask;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.TreeSet;
 
 public interface TaskManager {
     int generateId();
+
+    TreeSet<Task> sortedTasksByTime = null;
+    InMemoryHistoryManager history = null;
+
+
+    ArrayList<Task> getHistory();
+
+    ArrayList<Task> getPrioritizedTasks();
 
     ArrayList<Task> getTasks();
 
@@ -21,11 +31,11 @@ public interface TaskManager {
 
     void clearSubTusks();
 
-    Task getTask(int id);
+    Optional<Task> getTask(int id);
 
-    Epic getEpic(int id);
+    Optional<Epic> getEpic(int id);
 
-    SubTask getSubTask(int id);
+    Optional<SubTask> getSubTask(int id);
 
     Task create(Task task);
 

@@ -46,10 +46,11 @@ public class Epic extends Task {
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() + '\'' +
                 ", SubTasks[";
-        for (Integer subTask: subTasksId) {
+        for (Integer subTask : subTasksId) {
             string += subTask.toString() + "\n";
         }
         string += "]}";
         return string;
     }
 }
+

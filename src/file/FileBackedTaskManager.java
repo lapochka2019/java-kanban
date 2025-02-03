@@ -3,12 +3,10 @@ package file;
 import model.*;
 import service.InMemoryHistoryManager;
 import service.InMemoryTaskManager;
-import file.CSVConverter;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static file.CSVConverter.getTaskFromString;
@@ -104,23 +102,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         StringBuilder outputString = new StringBuilder(HEADER);
-        for (Task task:tasks.values())
+        for (Task task : tasks.values())
             outputString.append(CSVConverter.converTaskToString(task));
-        for (Epic epic:epics.values())
+        for (Epic epic : epics.values())
             outputString.append(CSVConverter.converTaskToString(epic));
-        for (SubTask subTask:subTasks.values())
+        for (SubTask subTask : subTasks.values())
             outputString.append(CSVConverter.converTaskToString(subTask));
         try {
             Files.writeString(file, outputString.toString());
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка сохранения в файл: ",e);
+            throw new ManagerSaveException("Ошибка сохранения в файл: ", e);
         }
     }
 
     //метод для чтения из файла
     public static FileBackedTaskManager loadFromFile(Path file) {
         //Создаем менеджер
-        FileBackedTaskManager manager = new FileBackedTaskManager(new InMemoryHistoryManager(),file);
+        FileBackedTaskManager manager = new FileBackedTaskManager(new InMemoryHistoryManager(), file);
         //Считываем файл
         try {
             List<String> lines = Files.readAllLines(file);
@@ -129,7 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 return manager;
             lines.removeFirst();
             //Перебираем строки
-            for (String s:lines) {
+            for (String s : lines) {
                 Task task = getTaskFromString(s);
                 switch (task.getType()) {
                     case TaskType.Task -> {
@@ -151,46 +149,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка чтения из файла: ",e);
+            throw new ManagerSaveException("Ошибка чтения из файла: ", e);
         }
 
         return manager;
-    }
-
-    public static void main(String[] args) {
-        Path file = Paths.get("newFile.csv");
-        InMemoryHistoryManager history = new InMemoryHistoryManager();
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(history,file);
-        Task task1 = new Task("Task1","Description1", Status.NEW);
-        Task task2 = new Task("Task2","Description2", Status.DONE);
-        Epic epic1 = new Epic("Epic1", "Description1");
-        Epic epic2 = new Epic("Epic2", "Description2");
-        SubTask subTask1 = new SubTask("Subtask1", "Description1", Status.IN_PROGRESS);
-        SubTask subTask2 = new SubTask("Subtask2", "Description2", Status.DONE);
-        SubTask subTask3 = new SubTask("Subtask3", "Description3", Status.NEW);
-        SubTask subTask4 = new SubTask("Subtask4", "Description4", Status.NEW);
-        SubTask subTask5 = new SubTask("Subtask5", "Description5", Status.IN_PROGRESS);
-
-        taskManager.create(task1);
-        taskManager.create(task2);
-
-        taskManager.create(epic1);
-        taskManager.create(epic2);
-
-        subTask1.setEpicId(epic1.getId());
-        subTask2.setEpicId(epic1.getId());
-        subTask3.setEpicId(epic1.getId());
-
-        subTask4.setEpicId(epic2.getId());
-        subTask5.setEpicId(epic2.getId());
-
-        taskManager.create(subTask1);
-        taskManager.create(subTask2);
-        taskManager.create(subTask3);
-        taskManager.create(subTask4);
-        taskManager.create(subTask5);
-
-        FileBackedTaskManager manager = loadFromFile(file);
-        manager.create(task1);
     }
 }
